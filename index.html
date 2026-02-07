@@ -4,19 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>PhoneStore RD | Official Store</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; scroll-behavior: smooth; }
         .btn-gradient { background: linear-gradient(90deg, #0071e3, #3b82f6); color: white; transition: 0.3s; }
-        .btn-gradient:hover { opacity: 0.9; transform: scale(1.02); }
         .product-card { background: white; border-radius: 24px; transition: 0.4s; overflow: hidden; border: 1px solid #edf2f7; }
         .product-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
         .nav-link { cursor: pointer; font-weight: 700; font-size: 13px; color: #94a3b8; transition: 0.3s; text-transform: uppercase; }
         .nav-link.active { color: #0071e3; border-bottom: 2px solid #0071e3; }
-        input, textarea { border: 1px solid #e2e8f0 !important; transition: 0.3s; }
-        input:focus, textarea:focus { border-color: #0071e3 !important; box-shadow: 0 0 0 3px rgba(0,113,227,0.1); }
     </style>
 </head>
 <body>
@@ -32,11 +31,11 @@
                 <span onclick="switchTab('accs')" id="tab-accs" class="nav-link">Accesorios</span>
             </nav>
             <div class="flex items-center gap-5">
-                <div class="hidden sm:flex gap-4 text-xl">
-                    <a href="https://wa.me/8098182320" target="_blank" class="text-green-500 hover:scale-110 transition"><i class="fa-brands fa-whatsapp"></i></a>
-                    <a href="#" target="_blank" class="text-pink-500 hover:scale-110 transition"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" target="_blank" class="text-black hover:scale-110 transition"><i class="fa-brands fa-tiktok"></i></a>
-                    <a href="#" target="_blank" class="text-blue-600 hover:scale-110 transition"><i class="fa-brands fa-facebook"></i></a>
+                <div class="flex gap-4 text-xl">
+                    <a href="https://wa.me/8098182320" class="text-green-500"><i class="fa-brands fa-whatsapp"></i></a>
+                    <a href="#" class="text-pink-500"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="text-black"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="#" class="text-blue-600"><i class="fa-brands fa-facebook"></i></a>
                 </div>
                 <button class="bg-blue-600 text-white px-5 py-2 rounded-full font-bold text-sm hidden md:block">809-818-2320</button>
             </div>
@@ -46,100 +45,83 @@
     <main class="max-w-7xl mx-auto px-6 py-12">
         <div class="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
             <div>
-                <p class="text-blue-600 font-bold text-sm uppercase tracking-widest mb-2">Sección</p>
-                <h2 id="section-title" class="text-4xl md:text-5xl font-800 text-slate-900 italic">Catálogo iPhones</h2>
+                <p class="text-blue-600 font-bold text-sm uppercase tracking-widest mb-1">Sección</p>
+                <h2 id="section-title" class="text-4xl md:text-5xl font-800 text-slate-900 italic tracking-tight">Catálogo iPhones</h2>
             </div>
             <div class="relative w-full md:w-80">
-                <input type="text" id="main-search" placeholder="Buscar..." class="w-full bg-white rounded-xl py-3 px-5 pl-12 outline-none shadow-sm">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="main-search" placeholder="Buscar..." class="w-full bg-white rounded-xl py-3 px-5 border border-slate-200 outline-none shadow-sm focus:border-blue-500 transition">
+                <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
             </div>
         </div>
 
-        <div id="grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-20"></div>
+        <div id="grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+            </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-24">
-            <div class="text-center p-6 bg-white rounded-3xl border border-gray-50 shadow-sm">
+            <div class="bg-white p-6 rounded-[24px] text-center border border-slate-50 shadow-sm">
                 <i class="fa-solid fa-microchip text-2xl text-blue-600 mb-3"></i>
-                <h4 class="font-800 text-sm text-slate-900">Piezas Originales</h4>
+                <h4 class="font-800 text-[10px] uppercase text-slate-900">Piezas Originales</h4>
             </div>
-            <div class="text-center p-6 bg-white rounded-3xl border border-gray-50 shadow-sm">
+            <div class="bg-white p-6 rounded-[24px] text-center border border-slate-50 shadow-sm">
                 <i class="fa-solid fa-mobile-screen text-2xl text-blue-600 mb-3"></i>
-                <h4 class="font-800 text-sm text-slate-900">Equipos Grade A+</h4>
+                <h4 class="font-800 text-[10px] uppercase text-slate-900">Equipos Grade A+</h4>
             </div>
-            <div class="text-center p-6 bg-white rounded-3xl border border-gray-50 shadow-sm">
+            <div class="bg-white p-6 rounded-[24px] text-center border border-slate-50 shadow-sm">
                 <i class="fa-solid fa-headset text-2xl text-blue-600 mb-3"></i>
-                <h4 class="font-800 text-sm text-slate-900">Soporte 24/7</h4>
+                <h4 class="font-800 text-[10px] uppercase text-slate-900">Soporte 24/7</h4>
             </div>
-            <div class="text-center p-6 bg-white rounded-3xl border border-gray-50 shadow-sm">
+            <div class="bg-white p-6 rounded-[24px] text-center border border-slate-50 shadow-sm">
                 <i class="fa-solid fa-unlock-keyhole text-2xl text-blue-600 mb-3"></i>
-                <h4 class="font-800 text-sm text-slate-900">Equipos Libres</h4>
+                <h4 class="font-800 text-[10px] uppercase text-slate-900">Equipos Libres</h4>
             </div>
         </div>
 
-        <section class="max-w-4xl mx-auto grid md:grid-cols-2 gap-12 items-center bg-white p-8 md:p-12 rounded-[40px] shadow-sm border border-gray-50 mb-24">
+        <section class="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center bg-white p-10 rounded-[40px] shadow-sm border border-slate-100 mb-24">
             <div>
-                <h3 class="text-3xl font-800 text-slate-900 mb-4">Déjanos tu Comentario Ahora</h3>
-                <p class="text-slate-500 text-sm font-medium leading-relaxed">Tu opinión es muy importante para nosotros.</p>
+                <h3 class="text-3xl font-800 text-slate-900 mb-4 leading-tight">Déjanos tu Comentario Ahora</h3>
+                <p class="text-slate-500 text-sm font-medium">Tu opinión es muy importante para nosotros.</p>
             </div>
-            <form id="comment-form" action="https://formspree.io/f/mlgwedgv" method="POST" class="space-y-4">
-                <input type="text" name="Nombre" placeholder="Tu Nombre Completo" required class="w-full p-4 rounded-xl bg-slate-50 outline-none text-sm font-bold">
-                <input type="email" name="Email" placeholder="Tu Correo" required class="w-full p-4 rounded-xl bg-slate-50 outline-none text-sm font-bold">
-                <textarea name="Mensaje" placeholder="Mensaje..." required class="w-full p-4 rounded-xl bg-slate-50 outline-none text-sm font-bold h-24"></textarea>
-                <button type="submit" id="btn-coment" class="btn-gradient w-full py-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg">Enviar Comentario Ahora</button>
-                <p id="form-status" class="text-center text-[10px] font-bold mt-2 hidden"></p>
+            <form action="https://formspree.io/f/mlgwedgv" method="POST" class="space-y-4">
+                <input type="text" name="Nombre" placeholder="Tu Nombre Completo" required class="w-full p-4 rounded-2xl bg-slate-50 outline-none text-sm font-bold border border-transparent focus:bg-white focus:border-blue-500 transition">
+                <input type="email" name="Email" placeholder="Tu Correo" required class="w-full p-4 rounded-2xl bg-slate-50 outline-none text-sm font-bold border border-transparent focus:bg-white focus:border-blue-500 transition">
+                <textarea name="Mensaje" placeholder="Mensaje..." required class="w-full p-4 rounded-2xl bg-slate-50 outline-none text-sm font-bold h-24 border border-transparent focus:bg-white focus:border-blue-500 transition"></textarea>
+                <button type="submit" class="btn-gradient w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg">Enviar Comentario Ahora</button>
             </form>
         </section>
 
-        <div class="rounded-[40px] overflow-hidden shadow-2xl h-80 border-8 border-white">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15136.634691459424!2d-69.9634701!3d18.4764831!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8eaf883906f0e93b%3A0x7782e4630a916194!2zUmVww7pibGljYSBEb21pbmljYW5h!5e0!3m2!1ses!2sdo!4v1700000000000!5m2!1ses!2sdo" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        <div class="rounded-[40px] overflow-hidden shadow-xl h-80 border-8 border-white mb-12">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15135.590114092496!2d-69.8457224!3d18.4882586!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2sdo!4v1700000000000" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
         </div>
     </main>
 
     <footer class="bg-slate-900 text-white py-12 px-6">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
-            <div class="text-center md:text-left">
-                <h4 class="text-2xl font-800 italic mb-2">PhoneStore RD</h4>
-                <p class="text-slate-400 text-xs font-bold uppercase tracking-tighter mb-4">República Dominicana</p>
-                <div class="flex justify-center md:justify-start gap-6 text-2xl">
-                    <a href="https://wa.me/8098182320" class="text-green-500 hover:text-white"><i class="fa-brands fa-whatsapp"></i></a>
-                    <a href="#" class="text-pink-500 hover:text-white"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" class="text-white hover:text-blue-400"><i class="fa-brands fa-tiktok"></i></a>
-                    <a href="#" class="text-blue-500 hover:text-white"><i class="fa-brands fa-facebook"></i></a>
-                </div>
+            <div>
+                <h4 class="text-2xl font-800 italic mb-1">PhoneStore RD</h4>
+                <p class="text-slate-500 text-[10px] uppercase font-bold">República Dominicana</p>
             </div>
-            <p class="text-slate-500 text-[10px] uppercase font-bold tracking-widest text-center">© 2026 Calidad Garantizada</p>
+            <p class="text-slate-600 text-[10px] uppercase font-bold tracking-widest">© 2026 Calidad Garantizada</p>
         </div>
     </footer>
 
-    <div id="receipt-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 bg-slate-900/90 backdrop-blur-sm">
-        <div class="bg-white rounded-[32px] w-full max-w-md p-8 shadow-2xl overflow-hidden relative">
-            <h2 class="text-xl font-800 text-slate-900 mb-6 uppercase tracking-tighter">Recibo de Apartado</h2>
-            <form id="receipt-form" action="https://formspree.io/f/mlgwedgv" method="POST" class="space-y-4 text-left">
-                <input type="hidden" name="Producto" id="hidden-prod">
-                <input type="hidden" name="Precio" id="hidden-price">
-                <div id="rec-info" class="bg-blue-50 p-5 rounded-2xl mb-4 border border-blue-100 text-slate-700 font-bold text-xs leading-relaxed"></div>
-                <input type="text" name="Cliente" placeholder="Nombre del Cliente" required class="w-full p-4 bg-slate-50 rounded-xl outline-none text-xs font-bold">
-                <input type="email" name="Correo" placeholder="Tu Correo" required class="w-full p-4 bg-slate-50 rounded-xl outline-none text-xs font-bold">
-                <input type="tel" name="WhatsApp" placeholder="Número de WhatsApp" required class="w-full p-4 bg-slate-50 rounded-xl outline-none text-xs font-bold">
-                <button type="submit" id="btn-confirm-receipt" class="btn-gradient w-full py-4 rounded-xl font-black text-xs uppercase shadow-lg">Confirmar Apartado</button>
-                <button type="button" onclick="document.getElementById('receipt-modal').classList.add('hidden')" class="w-full text-slate-400 font-bold text-[10px] mt-4 uppercase">Cancelar</button>
-                <p id="receipt-status" class="text-center text-[10px] font-bold mt-2 hidden"></p>
-            </form>
-        </div>
-    </div>
-
-    <div id="admin-panel" class="fixed inset-0 z-[200] hidden bg-white flex items-center justify-center p-4">
-        <div class="w-full max-w-4xl max-h-[90vh] overflow-y-auto p-8 text-center">
-            <div class="flex justify-between mb-8"><h2 class="text-2xl font-900 italic">Panel Admin</h2><button onclick="document.getElementById('admin-panel').classList.add('hidden')">✕</button></div>
-            <div class="grid md:grid-cols-2 gap-10 text-left">
+    <div id="admin-panel" class="fixed inset-0 z-[200] hidden bg-white/95 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="w-full max-w-4xl max-h-[90vh] overflow-y-auto p-10 bg-white border rounded-[40px] shadow-2xl">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-900 italic">Administración</h2>
+                <button onclick="document.getElementById('admin-panel').classList.add('hidden')" class="text-slate-400 hover:text-black">✕</button>
+            </div>
+            <div class="grid md:grid-cols-2 gap-10">
                 <div class="space-y-4">
-                    <input type="text" id="a-url" placeholder="URL de Imagen" class="w-full p-4 bg-slate-100 rounded-xl text-sm font-bold">
-                    <input type="text" id="a-name" placeholder="Nombre Equipo" class="w-full p-4 bg-slate-100 rounded-xl text-sm font-bold">
-                    <input type="number" id="a-price" placeholder="Precio RD$" class="w-full p-4 bg-slate-100 rounded-xl text-sm font-bold">
-                    <textarea id="a-desc" placeholder="Descripción corta" class="w-full p-4 bg-slate-100 rounded-xl text-sm font-bold h-20"></textarea>
-                    <button id="btn-save" class="btn-gradient w-full py-4 rounded-xl font-black text-xs uppercase">Publicar Ahora</button>
+                    <input type="text" id="a-url" placeholder="URL de la imagen" class="w-full p-4 bg-slate-100 rounded-2xl outline-none text-sm font-bold border focus:border-blue-500">
+                    <input type="text" id="a-name" placeholder="Nombre (Ej: iPhone 15 Pro)" class="w-full p-4 bg-slate-100 rounded-2xl outline-none text-sm font-bold border focus:border-blue-500">
+                    <input type="number" id="a-price" placeholder="Precio (Sólo números)" class="w-full p-4 bg-slate-100 rounded-2xl outline-none text-sm font-bold border focus:border-blue-500">
+                    <textarea id="a-desc" placeholder="Descripción corta" class="w-full p-4 bg-slate-100 rounded-2xl outline-none text-sm font-bold h-24 border focus:border-blue-500"></textarea>
+                    <button id="btn-save" class="btn-gradient w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest">Publicar Ahora</button>
                 </div>
-                <div id="admin-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-2"></div>
+                <div class="border-l pl-6">
+                    <h3 class="text-xs font-black text-slate-400 uppercase mb-4">Gestión de Inventario</h3>
+                    <div id="admin-list" class="space-y-3 max-h-[300px] overflow-y-auto pr-2"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -148,21 +130,18 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyCdn4m4n3Aezuttg8E31DmipXLz0dBueU", projectId: "tiendacelularesrd-f0795", appId: "1:264926688681:web:4d2c5aa50ea2bce0e100b8" };
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCdn4m4n3Aezuttg8E31DmipXLz0dBueU", 
+            projectId: "tiendacelularesrd-f0795", 
+            appId: "1:264926688681:web:4d2c5aa50ea2bce0e100b8" 
+        };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
         let activeTab = 'phones';
         let adminClicks = 0;
 
-        document.getElementById('ps-logo').onclick = () => {
-            adminClicks++;
-            if(adminClicks === 5) {
-                if(prompt("ADMIN PASS:") === "Avd121094") document.getElementById('admin-panel').classList.remove('hidden');
-                adminClicks = 0;
-            }
-        };
-
+        // Cambiar pestañas
         window.switchTab = (t) => {
             activeTab = t;
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -171,62 +150,78 @@
             loadAll();
         };
 
-        window.openModal = (n, p) => {
-            document.getElementById('hidden-prod').value = n;
-            document.getElementById('hidden-price').value = p;
-            document.getElementById('rec-info').innerHTML = `EQUIPO: ${n}<br>PRECIO: RD$ ${Number(p).toLocaleString()}<br>ESTADO: Disponible ✅`;
-            document.getElementById('receipt-modal').classList.replace('hidden', 'flex');
-        };
-
-        const receiptForm = document.getElementById("receipt-form");
-        receiptForm.onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById("btn-confirm-receipt");
-            const status = document.getElementById("receipt-status");
-            btn.innerText = "ENVIANDO...";
-            const response = await fetch(receiptForm.action, { method: 'POST', body: new FormData(receiptForm), headers: {'Accept': 'application/json'} });
-            if(response.ok) {
-                status.innerText = "✅ SOLICITUD ENVIADA"; status.className = "text-center text-[10px] font-bold mt-2 text-green-600 block";
-                setTimeout(() => { document.getElementById('receipt-modal').classList.add('hidden'); receiptForm.reset(); status.classList.add('hidden'); btn.innerText = "Confirmar Apartado"; }, 3000);
+        // Acceso Admin (5 clics en logo)
+        document.getElementById('ps-logo').onclick = () => {
+            adminClicks++;
+            if(adminClicks === 5) {
+                if(prompt("PASSWORD:") === "Avd121094") document.getElementById('admin-panel').classList.remove('hidden');
+                adminClicks = 0;
             }
         };
 
-        const commentForm = document.getElementById("comment-form");
-        commentForm.onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById("btn-coment");
-            const status = document.getElementById("form-status");
-            btn.innerText = "ENVIANDO...";
-            const response = await fetch(commentForm.action, { method: 'POST', body: new FormData(commentForm), headers: {'Accept': 'application/json'} });
-            if(response.ok) {
-                status.innerText = "✅ GRACIAS"; status.className = "text-center text-[10px] font-bold mt-2 text-green-600 block";
-                commentForm.reset(); btn.innerText = "Enviar Comentario Ahora";
-            }
-        };
-
+        // GUARDAR Y PUBLICAR AUTOMÁTICAMENTE
         document.getElementById('btn-save').onclick = async () => {
-            const n = document.getElementById('a-name').value, p = document.getElementById('a-price').value, d = document.getElementById('a-desc').value, u = document.getElementById('a-url').value;
-            if(!n || !p || !u) return alert("Faltan datos");
-            await addDoc(collection(db, "productos"), { n, p, d, cat: n.toLowerCase().includes('iphone') ? 'phones' : 'accs', imgs: [u], creado: Date.now() });
-            location.reload();
+            const n = document.getElementById('a-name').value;
+            const p = document.getElementById('a-price').value;
+            const d = document.getElementById('a-desc').value;
+            const u = document.getElementById('a-url').value;
+            
+            if(!n || !p || !u) return alert("Completa los datos básicos");
+
+            await addDoc(collection(db, "productos"), {
+                n, p, d,
+                cat: n.toLowerCase().includes('iphone') ? 'phones' : 'accs',
+                imgs: [u],
+                creado: Date.now()
+            });
+
+            document.getElementById('a-name').value = "";
+            document.getElementById('a-price').value = "";
+            document.getElementById('a-desc').value = "";
+            document.getElementById('a-url').value = "";
+            alert("¡Publicado en la página de inicio!");
         };
 
-        window.borrarP = async (id) => { if(confirm("¿Borrar?")) await deleteDoc(doc(db, "productos", id)); };
+        // ELIMINAR
+        window.borrarP = async (id) => {
+            if(confirm("¿Eliminar este equipo?")) await deleteDoc(doc(db, "productos", id));
+        };
 
+        // CARGA EN TIEMPO REAL PARA EL PÚBLICO
         function loadAll() {
-            const grid = document.getElementById('grid-container'), alist = document.getElementById('admin-list');
+            const grid = document.getElementById('grid-container');
+            const alist = document.getElementById('admin-list');
+            
             onSnapshot(query(collection(db, "productos"), orderBy("creado", "desc")), (snap) => {
-                grid.innerHTML = ""; alist.innerHTML = "";
+                grid.innerHTML = "";
+                alist.innerHTML = "";
                 snap.forEach(s => {
-                    const d = s.data(), id = s.id;
+                    const d = s.data();
+                    const id = s.id;
+
+                    // Lista Admin
                     const itemA = document.createElement('div');
-                    itemA.className = "flex justify-between bg-slate-100 p-3 rounded-xl text-[10px] font-bold mb-2";
-                    itemA.innerHTML = `<span>${d.n}</span><button onclick="borrarP('${id}')" class="text-red-500">Eliminar</button>`;
+                    itemA.className = "flex justify-between items-center bg-slate-50 p-4 rounded-2xl border border-slate-100";
+                    itemA.innerHTML = `<span class="text-xs font-bold text-slate-700">${d.n}</span>
+                                      <button onclick="borrarP('${id}')" class="text-red-500 font-black text-[10px] uppercase px-3 py-1 rounded-lg transition hover:bg-red-50">Eliminar</button>`;
                     alist.appendChild(itemA);
+
+                    // Card para el Público (Diseño Foto 2)
                     if(d.cat === activeTab) {
                         const card = document.createElement('div');
-                        card.className = "product-card";
-                        card.innerHTML = `<img src="${d.imgs[0]}" class="w-full h-64 object-cover"><div class="p-6"><h3 class="font-800 text-lg text-slate-900">${d.n}</h3><p class="text-[10px] text-slate-400 font-bold uppercase mt-1 mb-4">${d.d}</p><div class="flex justify-between items-center"><span class="font-800 text-slate-900">RD$ ${Number(d.p).toLocaleString()}</span><button onclick="openModal('${d.n}', ${d.p})" class="bg-blue-600 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase shadow-md">Apartar</button></div></div>`;
+                        card.className = "product-card shadow-sm";
+                        card.innerHTML = `
+                            <div class="h-64 bg-slate-100 overflow-hidden">
+                                <img src="${d.imgs[0]}" class="w-full h-full object-cover">
+                            </div>
+                            <div class="p-6">
+                                <h3 class="font-800 text-lg text-slate-900 leading-tight mb-1">${d.n}</h3>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-4">${d.d}</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="font-800 text-slate-900 text-lg">RD$ ${Number(d.p).toLocaleString()}</span>
+                                    <button class="bg-blue-600 text-white px-5 py-2 rounded-xl text-[11px] font-black uppercase shadow-md hover:bg-blue-700 transition">Apartar</button>
+                                </div>
+                            </div>`;
                         grid.appendChild(card);
                     }
                 });
