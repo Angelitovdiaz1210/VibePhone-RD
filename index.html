@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VibePhone RD | Exclusive Store</title>
+
+    <meta property="og:title" content="VibePhone RD - Tienda Premium Exclusiva">
+    <meta property="og:description" content="Consigue tu iPhone al mejor precio en Santo Domingo. ¡Haz tu pedido y recibe tu comprobante al instante!">
+    <meta property="og:image" content="https://tu-dominio.com/logo-vibephone.jpg"> 
+    <meta property="og:url" content="https://tu-dominio.com">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -198,7 +205,7 @@
             document.getElementById('buy-modal').style.display = 'flex';
         }
 
-        // ALGORITMO DE ENVÍO DE CORREO
+        // LÓGICA DE ENVÍO - COINCIDE CON TU PLANTILLA EMAILJS
         function handleOrderSubmit(event) {
             event.preventDefault();
             const btn = document.getElementById('btn-submit');
@@ -206,12 +213,13 @@
 
             const templateParams = {
                 order_id: document.getElementById('receipt-id').innerText,
-                user_email: document.getElementById('c-email').value,
+                user_email: document.getElementById('c-email').value, // Esto envía el dato al {{user_email}} de tu panel
                 product_name: currentProd.n,
                 product_price: Number(currentProd.p).toLocaleString(),
                 delivery_address: document.getElementById('c-address').value
             };
 
+            // ID DE SERVICIO Y PLANTILLA SEGÚN TUS CAPTURAS
             emailjs.send('Avd121094', 'template_v1i9y2e', templateParams)
                 .then(() => {
                     alert("¡Éxito! Tu recibo ha sido enviado. Revisa tu bandeja de entrada.");
@@ -219,7 +227,8 @@
                     document.getElementById('email-form').reset();
                 })
                 .catch((error) => {
-                    alert("Error de conexión. Asegúrate de que la plantilla esté guardada en EmailJS.");
+                    alert("Error de conexión. Verifica si presionaste el botón azul 'Ahorrar' en EmailJS.");
+                    console.error("Detalle del error:", error);
                     btn.innerText = "Finalizar y recibir comprobante"; btn.disabled = false;
                 });
         }
@@ -247,4 +256,5 @@
         renderStore();
     </script>
 </body>
-</html>
+    </html>
+                                
