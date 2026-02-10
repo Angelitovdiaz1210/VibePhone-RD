@@ -3,93 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VibePhone RD | Reserva tu iPhone</title>
+    <title>VibePhone RD | Exclusive Store</title>
     
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     
     <style>
-        :root { --temu-orange: #fb7701; }
-        body { font-family: 'Inter', sans-serif; background: #f4f4f4; }
+        :root { --vibe-blue: #0071e3; --vibe-bg: #ffffff; --vibe-gradient: linear-gradient(135deg, #0071e3 0%, #5e5ce6 100%); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--vibe-bg); color: #1d1d1f; }
 
-        /* INTERFAZ ESTILO TEMU */
-        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding: 8px; }
-        @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(4, 1fr); } }
+        /* TAMAÑO DE IMÁGENES COMPACTO - SIN CAMBIAR TU ESTRUCTURA */
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; max-width: 1400px; margin: 0 auto; }
+        @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; } }
 
-        .vibe-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative; }
-        .vibe-card img { width: 100%; height: 160px; object-fit: cover; }
+        .vibe-card { background: #f5f5f7; border-radius: 15px; overflow: hidden; display: flex; flex-direction: column; text-align: center; border: 1px solid #eee; }
+        .vibe-card img { width: 100%; height: 130px; object-fit: contain; padding: 10px; background: white; }
+        @media (min-width: 768px) { .vibe-card img { height: 200px; } }
+
+        .btn-buy { background: var(--vibe-gradient); color: white; padding: 10px; border-radius: 12px; font-weight: 800; font-size: 11px; margin: 0 10px 10px 10px; cursor: pointer; border: none; }
         
-        /* Etiqueta de Apartado en la foto */
-        .reserve-tag { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.7); color: white; font-size: 9px; padding: 3px 8px; border-radius: 4px; font-weight: 700; }
+        .modal-blur { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(15px); z-index: 2000; align-items: center; justify-content: center; padding: 15px; }
+        .modal-box { background: white; border-radius: 25px; width: 100%; max-width: 450px; padding: 25px; max-height: 90vh; overflow-y: auto; }
         
-        .info-container { padding: 10px; }
-        .product-price { color: var(--temu-orange); font-size: 18px; font-weight: 900; }
-        
-        /* MODAL DE PAGO */
-        .modal-blur { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; padding: 10px; }
-        .modal-box { background: white; border-radius: 15px; width: 100%; max-width: 480px; padding: 25px; max-height: 95vh; overflow-y: auto; }
-        
-        .bank-card { background: linear-gradient(135deg, #004b93 0%, #0071e3 100%); color: white; padding: 20px; border-radius: 12px; margin: 15px 0; }
-        
-        /* Aviso de 70/30 */
-        .policy-banner { background: #fff8e1; border: 1px solid #ffe082; color: #856404; padding: 10px; border-radius: 8px; font-size: 11px; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .bank-status { background: #f0f7ff; border: 1px solid #0071e3; border-radius: 15px; padding: 15px; margin: 10px 0; text-align: center; }
     </style>
 </head>
 <body>
 
-    <nav class="bg-white p-4 sticky top-0 z-50 border-b flex justify-between items-center text-center">
-        <h1 class="font-black text-orange-600 italic text-xl" id="logo-trigger">VibePhone RD</h1>
-        <div class="text-[9px] font-black bg-blue-600 text-white px-3 py-1 rounded-full uppercase">Aparta con el 70%</div>
+    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b">
+        <div class="max-w-[1400px] mx-auto px-4 py-3 flex justify-between items-center text-center">
+            <div class="flex items-center gap-2 cursor-pointer" id="logo-trigger">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black">V</div>
+                <h1 class="font-black tracking-tighter">VibePhone RD</h1>
+            </div>
+        </div>
     </nav>
+
+    <header class="py-8 text-center px-4">
+        <h2 class="text-3xl font-black italic text-blue-600">VibePhone RD.</h2>
+        <p class="text-[10px] font-bold text-gray-400 uppercase mt-1">Equipos Exclusivos | Reserva 70%</p>
+    </header>
 
     <main id="store-grid" class="product-grid"></main>
 
     <div id="buy-modal" class="modal-blur">
         <div class="modal-box">
-            <div class="flex justify-between items-center mb-4">
-                <span class="text-[10px] font-extrabold text-blue-600 uppercase">Confirmación de Reserva</span>
-                <button onclick="closeM()" class="text-gray-400 font-bold">Cerrar</button>
+            <h2 class="text-xl font-black mb-4 text-center">Confirmar Pedido</h2>
+            <div id="prod-summary" class="bg-gray-50 p-3 rounded-xl flex items-center gap-4 mb-4 text-sm font-bold border"></div>
+
+            <div class="bank-status">
+                <p class="text-[9px] font-black text-blue-600 uppercase">Método de Pago Vinculado</p>
+                <p class="text-sm font-bold text-blue-900 mt-1">Banco Popular Dominicano</p>
+                <p class="text-[10px] text-gray-400">Titular: Angel Valenzuela</p>
             </div>
 
-            <div class="policy-banner">
-                <span>⚠️</span>
-                <p>Puedes apartar este equipo con el 70%. El 30% restante se paga al momento de la entrega.</p>
-            </div>
-
-            <div class="bank-card text-center">
-                <p class="text-[10px] opacity-80 font-bold uppercase">Banco Popular - Ahorros</p>
-                <p class="text-xl font-mono font-bold my-1">000-000000-0</p>
-                <p class="text-xs font-bold">Angel Valenzuela / VibePhone RD</p>
-            </div>
-
-            <form id="email-form" onsubmit="handleOrderSubmit(event)" class="space-y-4">
-                <div class="bg-gray-50 p-4 rounded-xl border flex justify-between items-center">
-                    <div>
-                        <p class="text-[10px] font-bold text-gray-400 uppercase">Precio Total</p>
-                        <div class="text-xl font-black text-gray-800" id="price-total">RD$ 0</div>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-[10px] font-bold text-orange-600 uppercase">Mínimo para Apartar (70%)</p>
-                        <div class="text-xl font-black text-orange-600" id="price-70">RD$ 0</div>
-                    </div>
+            <form id="email-form" onsubmit="handleOrderSubmit(event)" class="space-y-3">
+                <div class="grid grid-cols-2 gap-2 bg-gray-50 p-3 rounded-xl border mb-2">
+                    <div><p class="text-[8px] font-bold text-gray-400 uppercase">Total</p><p class="font-black text-sm" id="price-total"></p></div>
+                    <div class="text-right"><p class="text-[8px] font-bold text-orange-600 uppercase">70% para apartar</p><p class="font-black text-sm text-orange-600" id="price-70"></p></div>
                 </div>
 
-                <div class="space-y-2">
-                    <input type="text" id="c-name" placeholder="Tu nombre completo" required class="w-full p-4 border rounded-xl text-sm font-bold">
-                    <input type="email" id="c-email" placeholder="Correo para el recibo" required class="w-full p-4 border rounded-xl text-sm font-bold">
-                    <input type="text" id="c-address" placeholder="Dirección de entrega" required class="w-full p-4 border rounded-xl text-sm font-bold">
-                </div>
-
-                <div class="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
+                <input type="text" id="c-name" placeholder="Tu nombre" required class="w-full p-3 bg-gray-50 rounded-lg outline-none text-sm font-bold border">
+                <input type="email" id="c-email" placeholder="Correo electrónico" required class="w-full p-3 bg-gray-50 rounded-lg outline-none text-sm font-bold border">
+                <input type="text" id="c-address" placeholder="Dirección de entrega" required class="w-full p-3 bg-gray-50 rounded-lg outline-none text-sm font-bold border">
+                
+                <div class="p-3 bg-blue-50 rounded-lg flex items-center gap-2">
                     <input type="checkbox" required class="w-4 h-4">
-                    <label class="text-[10px] font-bold text-blue-700 leading-tight">Entiendo que debo transferir al menos el 70% para confirmar mi pedido.</label>
+                    <p class="text-[9px] font-bold text-blue-700 uppercase">Confirmo que he realizado la transferencia bancaria.</p>
                 </div>
 
-                <button type="submit" id="btn-submit" class="w-full py-5 bg-orange-600 text-white rounded-xl font-black uppercase shadow-lg hover:bg-orange-700 transition">Confirmar y recibir comprobante</button>
+                <button type="submit" id="btn-submit" class="w-full py-4 bg-blue-600 text-white rounded-xl font-black uppercase text-xs shadow-lg">Finalizar y recibir recibo</button>
+                <button type="button" onclick="closeM()" class="w-full text-[9px] font-bold text-gray-400 uppercase mt-2">Cerrar</button>
             </form>
+        </div>
+    </div>
+
+    <div id="admin-modal" class="modal-blur">
+        <div class="modal-box">
+            <h2 class="text-xl font-black mb-4">Admin</h2>
+            <div class="space-y-2">
+                <input type="text" id="in-name" placeholder="Modelo" class="w-full p-2 border rounded">
+                <input type="number" id="in-price" placeholder="Precio" class="w-full p-2 border rounded">
+                <input type="text" id="in-url" placeholder="URL Imagen" class="w-full p-2 border rounded">
+                <select id="in-cat" class="w-full p-2 border rounded">
+                    <option value="phones">CELULARES</option>
+                    <option value="accs">ACCESORIOS</option>
+                </select>
+                <button onclick="saveToFirebase()" class="w-full py-2 bg-black text-white font-bold rounded">Subir</button>
+            </div>
+            <div id="admin-list" class="mt-4 max-h-40 overflow-auto"></div>
         </div>
     </div>
 
@@ -99,11 +104,17 @@
         const db = firebase.firestore();
         (function(){ emailjs.init("YFdmH2dv7ubtkjzod"); })();
 
+        // LLAVE DE CUENTA SEGURA (827940313)
+        const _keyA = [8, 2, 7];
+        const _keyB = [9, 4, 0];
+        const _keyC = [3, 1, 3];
+        const getVault = () => [..._keyA, ..._keyB, ..._keyC].join("");
+
         let currentTab = 'phones', currentProd = null, count = 0;
 
         document.getElementById('logo-trigger').onclick = () => { 
             count++; if(count === 5) { 
-                if(prompt("CLAVE:") === "Avd121094") { alert("Panel Admin Habilitado"); } 
+                if(prompt("CLAVE:") === "Avd121094") { document.getElementById('admin-modal').style.display='flex'; loadAdminItems(); } 
                 count = 0; 
             } 
         };
@@ -116,22 +127,21 @@
                 const item = doc.data();
                 grid.innerHTML += `
                 <div class="vibe-card">
-                    <div class="reserve-tag">70% APARTADO</div>
                     <img src="${item.url}">
-                    <div class="info-container">
-                        <h3 class="text-[11px] font-bold leading-tight mb-2 h-8 overflow-hidden">${item.n}</h3>
-                        <p class="product-price">RD$ ${Number(item.p).toLocaleString()}</p>
-                        <button onclick="openForm('${item.n}', '${item.p}', '${item.url}')" class="w-full mt-2 py-2 bg-black text-white text-[10px] font-black rounded-full">ADQUIRIR</button>
+                    <div class="p-2">
+                        <h3 class="text-[11px] font-extrabold truncate">${item.n}</h3>
+                        <p class="text-blue-600 font-black text-sm">RD$ ${Number(item.p).toLocaleString()}</p>
                     </div>
+                    <button onclick="openForm('${item.n}', '${item.p}', '${item.url}')" class="btn-buy">Adquirir</button>
                 </div>`;
             });
         }
 
         function openForm(n, p, img) {
             currentProd = { n, p, img };
-            const total = Number(p);
-            const initial = total * 0.7; // Cálculo del 70%
-            document.getElementById('price-total').innerText = "RD$ " + total.toLocaleString();
+            const initial = Number(p) * 0.7;
+            document.getElementById('prod-summary').innerHTML = `<img src="${img}" class="w-10 h-10 object-contain"><span>${n}</span>`;
+            document.getElementById('price-total').innerText = "RD$ " + Number(p).toLocaleString();
             document.getElementById('price-70').innerText = "RD$ " + initial.toLocaleString();
             document.getElementById('buy-modal').style.display = 'flex';
         }
@@ -139,29 +149,49 @@
         function handleOrderSubmit(event) {
             event.preventDefault();
             const btn = document.getElementById('btn-submit');
-            btn.innerText = "CONFIRMANDO..."; btn.disabled = true;
+            btn.innerText = "PROCESANDO PAGO..."; btn.disabled = true;
 
             const templateParams = {
                 order_id: "VP-" + Math.floor(1000 + Math.random() * 9000),
-                user_email: document.getElementById('c-email').value, // Variable user_email para EmailJS
+                user_email: document.getElementById('c-email').value,
                 product_name: currentProd.n,
                 product_price: Number(currentProd.p).toLocaleString(),
-                delivery_address: document.getElementById('c-address').value
+                delivery_address: document.getElementById('c-address').value,
+                v_code: getVault() // La llave se envía solo en el proceso interno
             };
 
             emailjs.send('Avd121094', 'template_v1i9y2e', templateParams)
                 .then(() => {
-                    alert("¡RESERVA REALIZADA! Tu comprobante de pago ha sido enviado al correo. Procesaremos tu iPhone de inmediato.");
-                    closeM(); btn.innerText = "Confirmar y recibir comprobante"; btn.disabled = false;
+                    alert("¡PEDIDO CONFIRMADO! Tu recibo de pago ha sido enviado.");
+                    closeM(); btn.innerText = "Finalizar y recibir recibo"; btn.disabled = false;
                 })
                 .catch(() => {
-                    alert("Error. Asegúrate de presionar 'Ahorrar' en tu panel de EmailJS.");
-                    btn.innerText = "Confirmar y recibir comprobante"; btn.disabled = false;
+                    alert("Error. Intenta de nuevo.");
+                    btn.innerText = "Finalizar y recibir recibo"; btn.disabled = false;
                 });
         }
 
-        function closeM() { document.getElementById('buy-modal').style.display = 'none'; }
+        async function saveToFirebase() {
+            const n = document.getElementById('in-name').value;
+            const p = document.getElementById('in-price').value;
+            await db.collection("productos").add({ n, p, url: document.getElementById('in-url').value, cat: document.getElementById('in-cat').value, fecha: Date.now() });
+            location.reload();
+        }
+
+        async function loadAdminItems() {
+            const list = document.getElementById('admin-list');
+            const qs = await db.collection("productos").get();
+            list.innerHTML = "";
+            qs.forEach(doc => { 
+                list.innerHTML += `<div class="flex justify-between p-2 border-b text-xs"><span>${doc.data().n}</span><button onclick="deleteItem('${doc.id}')" class="text-red-500">X</button></div>`; 
+            });
+        }
+
+        async function deleteItem(id) { if(confirm("¿Eliminar?")) { await db.collection("productos").doc(id).delete(); loadAdminItems(); } }
+        function setTab(t) { currentTab = t; renderStore(); }
+        function closeM() { document.querySelectorAll('.modal-blur').forEach(m => m.style.display='none'); }
         renderStore();
     </script>
 </body>
-</html>
+    </html>
+    
