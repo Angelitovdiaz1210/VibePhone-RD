@@ -2,74 +2,28 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VibePhone RD | Exclusive Store</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibePhone RD | Premium Experience</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
     <style>
-        :root { --vibe-blue: #0071e3; --vibe-bg: #ffffff; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #ffffff; color: #1d1d1f; margin: 0; padding: 0; overflow-x: hidden; }
-        
-        /* VIDEO HERO (VERSION ORIGINAL) */
-        .video-container { position: relative; width: 100%; height: 40vh; background: #000; overflow: hidden; }
-        @media (min-width: 768px) { .video-container { height: 60vh; } }
-        .video-container iframe { position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 40vh; min-width: 71.11vh; transform: translate(-50%, -50%); pointer-events: none; }
-        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.4), transparent, #fff); z-index: 5; }
-        .hero-text { position: absolute; z-index: 10; bottom: 20px; width: 100%; text-align: center; color: white; }
-
-        /* GRID ULTRA COMPACTO - 2 COLUMNAS REALES EN MOVIL */
-        .product-grid { 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 8px; 
-            padding: 8px; 
-            max-width: 1200px; 
-            margin: 0 auto; 
-        }
-        @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(4, 1fr); gap: 15px; } }
-        
-        /* TARJETA MINI */
-        .vibe-card { 
-            background: #f5f5f7; 
-            border-radius: 15px; 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column; 
-            border: 1px solid #eee;
-        }
-        
-        .vibe-card img { 
-            width: 100%; 
-            height: 100px; /* Imagen pequeña para que quepan más */
-            object-fit: contain; 
-            padding: 8px; 
-        }
-        @media (min-width: 768px) { .vibe-card img { height: 150px; } }
-        
-        .info-area { padding: 8px; text-align: center; }
-        .prod-name { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #333; line-height: 1.1; margin-bottom: 4px; }
-        .prod-price { font-size: 12px; font-weight: 800; color: var(--vibe-blue); }
-        
-        .btn-buy { 
-            background: var(--vibe-blue); 
-            color: white; 
-            padding: 6px; 
-            border-radius: 8px; 
-            font-weight: 800; 
-            font-size: 9px; 
-            margin: 0 8px 8px 8px; 
-            text-transform: uppercase;
-        }
-        
-        /* BANNER COMPACTO (ARREGLADO PARA QUE NO SEA GIGANTE) */
-        .mini-banner { background: #f5f5f7; margin: 10px; border-radius: 15px; padding: 15px; text-align: center; border: 1px solid #eee; }
-
-        .wsp-float { position: fixed; bottom: 15px; right: 15px; background: #25d366; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        body { font-family: 'Inter', sans-serif; background-color: #f9f9f9; }
+        .video-container { position: relative; width: 100%; height: 400px; overflow: hidden; background: #000; }
+        .video-container iframe { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100vw; height: 56.25vw; min-height: 100%; min-width: 177.77%; pointer-events: none; }
+        .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8)); }
+        .hero-text { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white; }
+        .mini-banner { background: white; margin: -20px 20px 20px; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; z-index: 10; text-align: center; }
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 15px; }
+        .vibe-card { background: white; border-radius: 20px; overflow: hidden; border: 1px solid #f0f0f0; }
+        .vibe-card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+        .info-area { padding: 12px; }
+        .prod-name { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #333; }
+        .prod-price { font-size: 12px; font-weight: 900; color: #2563eb; }
+        .btn-buy { width: 100%; padding: 8px; background: #f3f4f6; font-size: 9px; font-weight: 900; text-transform: uppercase; }
+        .wsp-float { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; items-center; justify-content: center; font-size: 24px; z-index: 1000; box-shadow: 0 4px 15px rgba(37,211,102,0.3); }
+        @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(4, 1fr); max-width: 1200px; margin: 0 auto; } }
     </style>
 </head>
 <body>
@@ -83,17 +37,17 @@
                 <h1 class="text-[10px] font-black uppercase tracking-tighter">VibePhone RD</h1>
             </div>
             <div class="flex gap-3 text-[9px] font-extrabold uppercase text-gray-400">
-                <button onclick="setTab('phones')" class="text-blue-600">Equipos</button>
-                <button onclick="setTab('accs')">Accesorios</button>
+                <button onclick="setTab('phones')" id="btn-phones" class="text-blue-600">Equipos</button>
+                <button onclick="setTab('accs')" id="btn-accs">Accesorios</button>
             </div>
         </div>
     </nav>
 
     <div class="video-container">
-        <iframe src="https://www.youtube.com/embed/keYat4iSYAQ?autoplay=1&mute=1&loop=1&playlist=keYat4iSYAQ&controls=0&showinfo=0&rel=0&iv_load_policy=3" frameborder="0"></iframe>
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&loop=1&controls=0" frameborder="0"></iframe>
         <div class="hero-overlay"></div>
         <div class="hero-text">
-            <h2 class="text-2xl md:text-5xl font-black italic tracking-tighter">VibePhone RD.</h2>
+            <h2 class="text-2xl md:text-5xl font-black italic tracking-tighter uppercase">VibePhone RD.</h2>
             <p class="text-[8px] font-bold uppercase tracking-[0.3em] opacity-60">Premium Experience</p>
         </div>
     </div>
@@ -105,41 +59,95 @@
 
     <main id="store-grid" class="product-grid"></main>
 
-    <footer class="bg-black text-white py-8 mt-10 rounded-t-[30px] text-center">
-        <div class="flex justify-center gap-4 mb-4 text-lg">
-            <a href="https://www.instagram.com/vibephone_rd" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://wa.me/8098182320" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    <footer class="bg-black text-white py-10 mt-10 rounded-t-[30px] text-center">
+        <div class="flex justify-center gap-6 mb-6 text-xl">
+            <a href="https://www.instagram.com/vibephone_rd" target="_blank" class="hover:text-blue-500 transition"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/8098182320" target="_blank" class="hover:text-green-500 transition"><i class="fab fa-whatsapp"></i></a>
         </div>
-        <p class="text-[7px] text-zinc-600 uppercase tracking-widest">© 2026 VibePhone RD</p>
+        
+        <div class="mb-6">
+            <button onclick="togglePrivacy()" class="text-[8px] text-zinc-500 uppercase tracking-widest hover:text-white transition underline decoration-zinc-800">Política de Privacidad y Cookies</button>
+        </div>
+
+        <p class="text-[7px] text-zinc-600 uppercase tracking-widest">© 2026 VibePhone RD | Santo Domingo, DN</p>
     </footer>
 
+    <div id="privacy-modal" class="fixed inset-0 bg-black/95 z-[200] hidden overflow-y-auto p-6 backdrop-blur-sm">
+        <div class="max-w-xl mx-auto bg-white rounded-3xl p-8 mt-10 text-left shadow-2xl">
+            <h2 class="text-xl font-black mb-6 text-black tracking-tighter italic">POLÍTICA DE PRIVACIDAD</h2>
+            <div class="text-[11px] text-gray-600 leading-relaxed space-y-4">
+                <p>En <strong>VibePhone RD</strong>, la privacidad de nuestros visitantes es prioridad. Esta web utiliza servicios de terceros como Google AdSense para mostrar publicidad.</p>
+                <h3 class="font-black text-black text-[9px] uppercase tracking-wider">1. Cookies de Publicidad</h3>
+                <p>Google utiliza cookies (como la cookie de DoubleClick) para publicar anuncios en este sitio basados en las visitas de los usuarios.</p>
+                <h3 class="font-black text-black text-[9px] uppercase tracking-wider">2. Uso de Datos</h3>
+                <p>Los datos recolectados por Firebase o Google Analytics nos ayudan a mejorar la experiencia de compra. No vendemos información a terceros.</p>
+                <h3 class="font-black text-black text-[9px] uppercase tracking-wider">3. Enlaces a WhatsApp</h3>
+                <p>Al hacer clic en el botón de contacto, usted acepta iniciar una conversación privada para fines comerciales.</p>
+            </div>
+            <button onclick="togglePrivacy()" class="mt-8 w-full py-4 bg-blue-600 text-white text-[10px] font-black uppercase rounded-2xl shadow-lg shadow-blue-500/30 transition active:scale-95">Entendido y Cerrar</button>
+        </div>
+    </div>
+
     <script>
-        const firebaseConfig = { apiKey: "AIzaSyByV8-3X8kR_TlxV7-H6m5jW7L-p_z1r4", authDomain: "phonestorerd.firebaseapp.com", projectId: "phonestorerd", storageBucket: "phonestorerd.appspot.com", messagingSenderId: "360706963034", appId: "1:360706963034:web:49d1102e8ca73d55918a63" };
+        // Configuración Firebase
+        const firebaseConfig = { 
+            apiKey: "AIzaSyByV8-3X8kR_TlxV7-H6m5jW7L-p_z1r4", 
+            authDomain: "phonestorerd.firebaseapp.com", 
+            projectId: "phonestorerd", 
+            storageBucket: "phonestorerd.appspot.com", 
+            messagingSenderId: "360706963034", 
+            appId: "1:360706963034:web:49d1102e8ca73d55918a63" 
+        };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
         let currentTab = 'phones';
 
+        // Renderizar Tienda
         async function renderStore() {
             const grid = document.getElementById('store-grid');
-            grid.innerHTML = '<div class="col-span-full py-10 text-center text-[9px] font-bold text-gray-300">CARGANDO...</div>';
-            const qs = await db.collection("productos").where("cat", "==", currentTab).get();
-            grid.innerHTML = "";
-            qs.forEach(doc => {
-                const item = doc.data();
-                grid.innerHTML += `
-                <div class="vibe-card">
-                    <img src="${item.url}" loading="lazy">
-                    <div class="info-area">
-                        <h3 class="prod-name">${item.n}</h3>
-                        <p class="prod-price">RD$ ${Number(item.p).toLocaleString()}</p>
-                    </div>
-                    <button onclick="window.location.href='https://wa.me/8098182320?text=Info sobre ${item.n}'" class="btn-buy">Info</button>
-                </div>`;
-            });
+            grid.innerHTML = '<div class="col-span-full py-20 text-center text-[9px] font-black text-gray-300 tracking-[0.3em] animate-pulse">CARGANDO VIBE...</div>';
+            
+            try {
+                const qs = await db.collection("productos").where("cat", "==", currentTab).get();
+                grid.innerHTML = "";
+                if(qs.empty) {
+                    grid.innerHTML = '<div class="col-span-full py-10 text-center text-[9px] font-bold text-gray-400 uppercase">Próximamente más equipos</div>';
+                }
+                qs.forEach(doc => {
+                    const item = doc.data();
+                    grid.innerHTML += `
+                    <div class="vibe-card">
+                        <img src="${item.url}" alt="${item.n}" loading="lazy">
+                        <div class="info-area">
+                            <h3 class="prod-name">${item.n}</h3>
+                            <p class="prod-price">RD$ ${Number(item.p).toLocaleString()}</p>
+                        </div>
+                        <button onclick="window.location.href='https://wa.me/8098182320?text=Hola, solicito info sobre: ${item.n}'" class="btn-buy hover:bg-black hover:text-white transition">Consultar</button>
+                    </div>`;
+                });
+            } catch (error) {
+                grid.innerHTML = '<div class="col-span-full py-10 text-center text-red-500 font-bold">Error al conectar</div>';
+            }
         }
 
-        function setTab(t) { currentTab = t; renderStore(); }
+        // Cambio de pestañas
+        function setTab(t) { 
+            currentTab = t; 
+            document.getElementById('btn-phones').classList.toggle('text-blue-600', t === 'phones');
+            document.getElementById('btn-phones').classList.toggle('text-gray-400', t !== 'phones');
+            document.getElementById('btn-accs').classList.toggle('text-blue-600', t === 'accs');
+            document.getElementById('btn-accs').classList.toggle('text-gray-400', t !== 'accs');
+            renderStore(); 
+        }
+
+        // Función Modal
+        function togglePrivacy() {
+            const modal = document.getElementById('privacy-modal');
+            modal.classList.toggle('hidden');
+            document.body.style.overflow = modal.classList.contains('hidden') ? 'auto' : 'hidden';
+        }
+
         renderStore();
     </script>
 </body>
