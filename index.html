@@ -13,166 +13,166 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        /* --- INTRO GBA 3D REALISMO --- */
-        #gba-intro { 
-            position: fixed; inset: 0; background: #fff; z-index: 9999; 
-            display: flex; align-items: center; justify-content: center; 
-            perspective: 1000px; /* Necesario para el efecto 3D */
-        }
+        /* --- INTRO GBA --- */
+        #gba-intro { position: fixed; inset: 0; background: #fff; z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 1; transition: 0.8s; }
         .gba-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; }
+        .gba-letters { display: flex; gap: 4px; font-size: clamp(3rem, 15vw, 5.5rem); font-weight: 900; font-style: italic; letter-spacing: -4px; }
+        .letter { display: inline-block; transform: translateY(-300px); opacity: 0; animation: gba-drop 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+        .l-v { color: #2b2b8c; animation-delay: 0.1s; } .l-i { color: #00a651; animation-delay: 0.2s; } 
+        .l-b { color: #fff200; animation-delay: 0.3s; } .l-e { color: #2b2b8c; animation-delay: 0.4s; } 
+        .rainbow-shine { position: absolute; top: 45%; left: 0; width: 100%; height: 10px; background: linear-gradient(90deg, transparent, #ff0000, #ffff00, #00ff00, #0000ff, transparent); opacity: 0; z-index: 10; transform: skewX(-20deg) translateX(-150%); }
+        .shine-active { animation: rainbow-swipe 0.8s ease-in-out forwards; animation-delay: 1.2s; }
+        .n-style { font-size: clamp(1rem, 5vw, 1.6rem); color: #e60012; font-weight: 800; margin-top: 10px; opacity: 0; transform: scale(0.8); }
+        .n-active { animation: n-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; animation-delay: 1.2s; }
+        @keyframes gba-drop { 0% { transform: translateY(-400px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        @keyframes rainbow-swipe { 0% { transform: skewX(-20deg) translateX(-150%); opacity: 0; } 50% { opacity: 0.8; } 100% { transform: skewX(-20deg) translateX(150%); opacity: 0; } }
+        @keyframes n-pop { to { opacity: 1; transform: scale(1); } }
+
+        /* --- UI OPTIMIZADA --- */
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; color: white; overflow-x: hidden; width: 100%; }
+        .glass-nav { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.05); }
         
-        .gba-letters { 
-            display: flex; gap: 2px; 
-            font-size: 5rem; font-weight: 900; font-style: italic; 
-            letter-spacing: -4px; position: relative; 
-        }
-
-        .letter { 
-            display: inline-block; color: #2b2b8c; opacity: 0;
-            transform: translateZ(1000px) scale(4) rotateX(90deg); /* Vienen desde la pantalla */
-            animation: gba-3d-entry 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
-        }
-
-        /* Tiempos de entrada escalonados */
-        .l-v { animation-delay: 0.1s; }
-        .l-i { animation-delay: 0.2s; }
-        .l-b { animation-delay: 0.3s; }
-        .l-e { animation-delay: 0.4s; }
-
-        @keyframes gba-3d-entry {
-            0% { transform: translateZ(1000px) scale(4) rotateX(90deg); opacity: 0; }
-            70% { transform: translateZ(0) scale(1) rotateX(0deg); opacity: 1; }
-            85% { transform: translateY(-15px); } /* El leve saltito */
-            100% { transform: translateY(0); opacity: 1; }
-        }
-
-        /* Brillo Arcoíris que recorre las letras */
-        .rainbow-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255,0,0,0.4), 
-                rgba(255,255,0,0.4), 
-                rgba(0,255,0,0.4), 
-                rgba(0,150,255,0.4), 
-                transparent);
-            transform: skewX(-25deg) translateX(-150%);
-            mix-blend-mode: color; /* Hace que el color se pegue a las letras */
-            pointer-events: none;
-        }
-        .shine-active { animation: gba-shine 1s ease-in-out forwards; animation-delay: 1.3s; }
-
-        @keyframes gba-shine {
-            0% { transform: skewX(-25deg) translateX(-150%); }
-            100% { transform: skewX(-25deg) translateX(150%); }
-        }
-
-        .n-text { 
-            font-size: 1.4rem; color: #e60012; font-weight: 800; 
-            margin-top: 5px; opacity: 0; transform: scale(0.8);
-        }
-        .n-active { animation: n-fade 0.4s ease-out forwards; animation-delay: 1.3s; }
-        @keyframes n-fade { to { opacity: 1; transform: scale(1); } }
-
-        /* --- DISEÑO RESPONSIVO TIENDA --- */
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; color: white; overflow-x: hidden; }
-        .glass-nav { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.1); width: 100%; }
-        
-        .hero-banner { position: relative; height: 55vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .hero-banner { position: relative; height: 50vh; min-height: 400px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .video-container { position: absolute; inset: 0; z-index: -1; }
-        .video-container iframe { width: 100vw; height: 100vh; object-fit: cover; filter: brightness(0.4); scale: 1.2; }
+        .video-container iframe { width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); filter: brightness(0.5); }
+        
+        .hero-title { font-size: clamp(3.5rem, 15vw, 8rem); line-height: 0.9; }
 
-        #store-grid { 
-            display: grid; gap: 20px; padding: 20px; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-        }
-        @media (max-width: 640px) { #store-grid { grid-template-columns: 1fr; } }
+        .product-card { background: rgba(255, 255, 255, 0.03); border-radius: 30px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); transition: 0.4s; }
+        .product-img { height: 160px; width: 100%; object-contain: contain; margin-bottom: 15px; }
 
-        .product-card { 
-            background: rgba(255, 255, 255, 0.03); border-radius: 35px; padding: 25px; 
-            border: 1px solid rgba(255,255,255,0.05); transition: 0.4s; 
-        }
-        .product-card img { width: 100%; height: 250px; object-fit: contain; }
+        .trust-section { padding: 40px 20px; border-radius: 40px; }
+        .trust-tag { background: rgba(255,255,255,0.05); padding: 8px 15px; border-radius: 100px; font-size: 9px; font-weight: 800; border: 1px solid rgba(255,255,255,0.1); display: inline-flex; align-items: center; }
 
-        .modal-blur { 
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); 
-            backdrop-filter: blur(20px); z-index: 5000; align-items: center; justify-content: center; padding: 15px; 
-        }
-        .modal-box { 
-            width: 100%; max-width: 450px; background: #1e293b; border-radius: 40px; 
-            padding: 30px; border: 1px solid rgba(255,255,255,0.1); 
-        }
+        .modal-blur { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); z-index: 5000; align-items: center; justify-content: center; padding: 15px; overflow-y: auto; }
+        
+        footer { background: #000; border-top: 4px solid #2b2b8c; border-radius: 40px 40px 0 0; margin-top: 40px; }
+        .social-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: #1a1a1a; color: white; }
+
+        /* Ajustes para scroll móvil */
+        ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
 <body onload="startGBA()">
 
     <div id="gba-intro">
         <div class="gba-wrapper">
+            <div class="rainbow-shine" id="rainbow"></div>
             <div class="gba-letters">
                 <span class="letter l-v">V</span><span class="letter l-i">I</span><span class="letter l-b">B</span><span class="letter l-e">E</span>
-                <div class="rainbow-overlay" id="rainbow"></div>
             </div>
-            <div class="n-text" id="n-text">TECH HUB RD</div>
+            <div class="n-style" id="n-text">TECH HUB RD</div>
         </div>
     </div>
 
     <nav class="fixed top-0 w-full z-[100] glass-nav">
-        <div class="max-w-7xl mx-auto px-5 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-2 select-none" id="admin-trigger" 
-                 onmousedown="startPress()" onmouseup="cancelPress()" ontouchstart="startPress()" ontouchend="cancelPress()">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
                 <div class="w-10 h-10 bg-gradient-to-br from-[#2b2b8c] to-[#00a651] rounded-xl flex items-center justify-center text-white font-black italic shadow-lg">V</div>
-                <span class="text-xl font-black uppercase tracking-tighter italic text-white">VibePhone <span class="text-[#00a651]">RD</span></span>
+                <span class="text-lg font-black uppercase tracking-tighter italic text-white">VibePhone <span class="text-[#00a651]">RD</span></span>
             </div>
             <button onclick="toggleCart()" class="relative p-3 bg-white/5 rounded-xl border border-white/10">
-                <i class="fas fa-shopping-bag text-white"></i>
-                <span id="cart-count" class="absolute -top-1 -right-1 bg-[#2b2b8c] text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black">0</span>
+                <i class="fas fa-shopping-bag text-white text-sm"></i>
+                <span id="cart-count" class="absolute -top-1 -right-1 bg-[#2b2b8c] text-white text-[9px] w-5 h-5 rounded-full flex items-center justify-center font-black">0</span>
             </button>
         </div>
     </nav>
 
     <header class="hero-banner">
-        <div class="video-container"><iframe id="hero-video-iframe" src="" frameborder="0"></iframe></div>
-        <div class="relative z-10 px-4 text-center">
-            <h1 class="text-6xl md:text-8xl font-black italic uppercase text-white tracking-tighter">THE VIBE.</h1>
-            <p class="text-gray-400 font-bold uppercase tracking-[0.4em] text-[10px] mt-4">Authorized Reseller RD</p>
+        <div class="video-container"><iframe id="hero-video-iframe" src="" frameborder="0" allow="autoplay"></iframe></div>
+        <div class="relative z-10 text-center px-4">
+            <h1 class="hero-title font-black italic tracking-tighter uppercase text-white">THE VIBE.</h1>
+            <p class="text-gray-400 font-bold uppercase tracking-[0.3em] text-[10px] mt-2">Exclusividad • Potencia • Autenticidad</p>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto py-10">
-        <div id="store-grid"></div>
+    <section class="max-w-7xl mx-auto px-4 pt-10">
+        <div class="trust-section bg-white/5 border border-white/5 text-center">
+            <h2 class="text-2xl font-black italic mb-4">POTENCIA Y ESTILO.</h2>
+            <p class="text-gray-400 text-[10px] font-medium leading-relaxed mb-6 uppercase tracking-widest px-2">
+                Seleccionamos tecnología original que define tu personalidad. Cada equipo es una pieza certificada.
+            </p>
+            <div class="flex flex-wrap justify-center gap-2">
+                <span class="trust-tag"><i class="fas fa-check-circle mr-1 text-green-500"></i>100% Original</span>
+                <span class="trust-tag"><i class="fas fa-gem mr-1 text-blue-500"></i>Premium</span>
+                <span class="trust-tag"><i class="fas fa-certificate mr-1 text-yellow-500"></i>Certificado</span>
+            </div>
+        </div>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-4 py-12">
+        <div id="store-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
     </main>
 
+    <footer>
+        <div class="max-w-7xl mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+                <div class="space-y-4">
+                    <h3 class="text-xl font-black italic text-[#2b2b8c] uppercase">VibePhone RD</h3>
+                    <p class="text-gray-400 text-[9px] font-bold uppercase">La casa del iPhone y la tecnología en RD.</p>
+                    <div class="flex gap-2">
+                        <a href="#" class="social-btn"><i class="fab fa-instagram text-sm"></i></a>
+                        <a href="#" class="social-btn"><i class="fab fa-tiktok text-sm"></i></a>
+                        <a href="#" class="social-btn"><i class="fab fa-whatsapp text-sm"></i></a>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <h4 class="font-black text-[10px] uppercase mb-4 tracking-widest text-blue-500">Tienda</h4>
+                    <ul class="space-y-2 text-[9px] font-bold text-gray-500 uppercase">
+                        <li>iPhones</li><li>Android Series</li><li>Soporte</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-black text-[10px] uppercase mb-4 tracking-widest text-blue-500">Contacto</h4>
+                    <p class="text-[9px] font-bold text-gray-400 uppercase">+1 809-818-2320</p>
+                    <p class="text-[9px] font-bold text-gray-400 uppercase mb-4">info@vibephonerd.com</p>
+                    <p class="text-[9px] font-bold text-gray-500 uppercase">Lun - Sáb: 9AM - 7PM</p>
+                </div>
+                <div>
+                    <div class="rounded-2xl overflow-hidden border border-gray-800 h-24 w-full grayscale invert opacity-30">
+                        <iframe src="https://maps.google.com/maps?q=Santo%20Domingo&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen=""></iframe>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-10 pt-6 border-t border-white/5 text-center">
+                <p class="text-[8px] font-black text-gray-700 uppercase tracking-[3px]">© 2026 VIBEPHONE RD - TECH HUB OFFICIAL</p>
+            </div>
+        </div>
+    </footer>
+
     <div id="admin-modal" class="modal-blur">
-        <div class="modal-box text-white">
+        <div class="bg-slate-900 p-6 rounded-[30px] w-full max-w-lg border border-white/10 text-white">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-black uppercase text-blue-500 italic">Panel Maestro</h2>
-                <button onclick="closeAdmin()" class="text-3xl">×</button>
+                <h2 class="text-lg font-black uppercase text-blue-500 italic">Admin Panel</h2>
+                <button onclick="closeAdmin()" class="text-2xl text-gray-500">×</button>
             </div>
-            <div class="space-y-4 text-black">
-                <input type="number" id="v-tasa" placeholder="Tasa USD" class="w-full p-4 rounded-2xl font-bold">
-                <input type="text" id="v-video-url" placeholder="URL Video YouTube" class="w-full p-4 rounded-2xl text-xs">
-                <input type="text" id="p-n" placeholder="Nombre Equipo" class="w-full p-4 rounded-2xl">
-                <input type="number" id="p-p" placeholder="Precio RD$" class="w-full p-4 rounded-2xl font-bold">
-                <input type="text" id="p-u" placeholder="URL Imagen PNG" class="w-full p-4 rounded-2xl text-[10px]">
-                <button onclick="guardarAdmin()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black uppercase">Actualizar Tienda</button>
+            <div class="space-y-3 text-black">
+                <input type="number" id="v-tasa" placeholder="Tasa USD" class="w-full p-3 rounded-xl text-sm outline-none">
+                <input type="text" id="v-video-url" placeholder="YouTube URL" class="w-full p-3 rounded-xl text-xs outline-none">
+                <hr class="opacity-10">
+                <input type="text" id="p-n" placeholder="Modelo" class="w-full p-3 rounded-xl text-sm outline-none">
+                <input type="text" id="p-cap" placeholder="Capacidad" class="w-full p-3 rounded-xl text-sm outline-none">
+                <input type="number" id="p-p" placeholder="Precio RD$" class="w-full p-3 rounded-xl text-sm outline-none font-bold">
+                <input type="text" id="p-u" placeholder="Imagen .PNG URL" class="w-full p-3 rounded-xl text-[10px] outline-none">
+                <button onclick="guardarAdmin()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-black uppercase text-xs">Sincronizar</button>
+                <div id="admin-list" class="bg-black/20 p-4 rounded-xl max-h-[150px] overflow-y-auto space-y-2 mt-4"></div>
             </div>
-            <div id="admin-list" class="mt-6 space-y-2 overflow-y-auto max-h-40"></div>
         </div>
     </div>
 
     <div id="cart-modal" class="modal-blur">
-        <div class="modal-box text-center">
-            <h2 class="text-2xl font-black mb-6 uppercase text-blue-500 italic">Tu Carrito</h2>
-            <div id="cart-items" class="space-y-3 mb-6 text-white text-left"></div>
-            <div class="flex justify-between text-xl font-black text-white mb-6">
+        <div class="bg-slate-900 p-6 rounded-[30px] w-full max-w-sm border border-white/10 text-center text-white">
+            <h2 class="text-xl font-black mb-6 uppercase text-blue-500 italic">Mi Orden</h2>
+            <div id="cart-items" class="space-y-3 mb-6 border-b border-white/10 pb-6 max-h-[200px] overflow-y-auto"></div>
+            <div class="flex justify-between text-lg font-black mb-6">
                 <span>TOTAL:</span><span id="total-rd" class="text-green-500">RD$ 0</span>
             </div>
-            <input type="text" id="cust-name" placeholder="Tu Nombre" class="w-full p-4 bg-white/5 rounded-2xl border border-white/10 mb-4 text-white outline-none">
+            <input type="text" id="cust-name" placeholder="Tu Nombre" class="w-full p-4 bg-white/5 rounded-xl border border-white/10 mb-4 text-white text-sm outline-none">
             <div id="paypal-button-container" class="mb-4"></div>
-            <button onclick="checkoutWhatsApp()" class="w-full bg-[#25d366] text-white py-4 rounded-2xl font-black uppercase flex items-center justify-center gap-2">
-                <i class="fab fa-whatsapp"></i> WhatsApp Order
+            <button onclick="checkoutWhatsApp()" class="w-full bg-[#25d366] text-white py-4 rounded-xl font-black uppercase text-xs flex items-center justify-center gap-2">
+                <i class="fab fa-whatsapp"></i> WhatsApp
             </button>
-            <button onclick="toggleCart()" class="mt-4 text-gray-500 text-xs font-bold uppercase">Cerrar</button>
+            <button onclick="toggleCart()" class="mt-4 text-gray-600 font-bold text-[10px] uppercase">Cerrar</button>
         </div>
     </div>
 
@@ -180,34 +180,26 @@
         const firebaseConfig = { apiKey: "AIzaSyByV8-3X8kR_TlxV7-H6m5jW7L-p_z1r4", authDomain: "phonestorerd.firebaseapp.com", projectId: "phonestorerd", storageBucket: "phonestorerd.appspot.com", messagingSenderId: "360706963034", appId: "1:360706963034:web:49d1102e8ca73d55918a63" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        let cart = [], TASA = 58.50, pressTimer;
+        let cart = [], TASA = 58.50;
 
-        // Admin Secreto Celular
-        function startPress() { pressTimer = window.setTimeout(() => { document.getElementById('admin-modal').style.display = 'flex'; }, 3000); }
-        function cancelPress() { clearTimeout(pressTimer); }
-        window.onkeydown = (e) => { if(e.altKey && e.key === 'a') document.getElementById('admin-modal').style.display = 'flex'; };
-
-        // INTRO GBA 3D LOGIC
         function startGBA() {
             setTimeout(() => {
                 document.getElementById('rainbow').classList.add('shine-active');
                 document.getElementById('n-text').classList.add('n-active');
-            }, 1300);
-
+            }, 800);
             setTimeout(() => {
                 const intro = document.getElementById('gba-intro');
-                intro.style.transition = '1s';
                 intro.style.opacity = '0';
-                setTimeout(() => intro.style.display = 'none', 1000);
-            }, 5000);
+                setTimeout(() => intro.style.display = 'none', 800);
+            }, 4000);
         }
 
         async function loadSettings() {
             const doc = await db.collection("config").doc("hero").get();
             if(doc.exists) {
                 const d = doc.data();
-                if(d.videoId) document.getElementById('hero-video-iframe').src = `https://www.youtube.com/embed/${d.videoId}?autoplay=1&mute=1&loop=1&playlist=${d.videoId}&controls=0`;
-                if(d.tasa) TASA = d.tasa;
+                if(d.videoId) document.getElementById('hero-video-iframe').src = `https://www.youtube.com/embed/${d.videoId}?autoplay=1&mute=1&loop=1&playlist=${d.videoId}&controls=0&rel=0`;
+                if(d.tasa) { TASA = d.tasa; document.getElementById('v-tasa').value = TASA; }
             }
         }
 
@@ -218,54 +210,57 @@
             grid.innerHTML = ""; list.innerHTML = "";
             qs.forEach(doc => {
                 const it = doc.data(); const id = doc.id;
-                grid.innerHTML += `
-                <div class="product-card">
-                    <img src="${it.url}">
-                    <div class="text-center mt-4">
-                        <h3 class="font-black text-sm uppercase italic text-white">${it.n}</h3>
-                        <div class="flex items-center justify-between mt-6">
-                            <span class="text-white font-black text-xl italic">RD$ ${it.p.toLocaleString()}</span>
-                            <button onclick="addToCart('${it.n}', ${it.p})" class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center hover:bg-blue-600 transition">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
+                grid.innerHTML += `<div class="product-card text-center">
+                    <img src="${it.url}" class="product-img">
+                    <h3 class="font-black text-[10px] uppercase text-white mb-1 leading-tight">${it.n}</h3>
+                    <p class="text-[8px] text-gray-500 font-bold mb-3 uppercase">${it.cap || 'Certificado'}</p>
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-white font-black text-xs italic">RD$ ${it.p.toLocaleString()}</span>
+                        <button onclick="addToCart('${it.n}', ${it.p}, '${it.url}')" class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-[10px]"><i class="fas fa-plus"></i></button>
                     </div>
                 </div>`;
-                list.innerHTML += `<div class="flex justify-between bg-white/5 p-3 rounded-xl text-[10px] font-bold"><span>${it.n}</span><button onclick="borrarProd('${id}')" class="text-red-500">X</button></div>`;
+                list.innerHTML += `<div class="flex justify-between items-center bg-white/5 p-3 rounded-xl text-[9px] text-white">
+                    <span>${it.n}</span>
+                    <button onclick="borrarProd('${id}')" class="text-red-500"><i class="fas fa-trash"></i></button>
+                </div>`;
             });
+        }
+
+        function extractID(url) {
+            const reg = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const m = url.match(reg); return (m && m[2].length === 11) ? m[2] : url;
         }
 
         async function guardarAdmin() {
             const vUrl = document.getElementById('v-video-url').value, tasa = document.getElementById('v-tasa').value;
-            const pN = document.getElementById('p-n').value, pP = document.getElementById('p-p').value, pU = document.getElementById('p-u').value;
+            const pN = document.getElementById('p-n').value, pC = document.getElementById('p-cap').value, pP = document.getElementById('p-p').value, pU = document.getElementById('p-u').value;
             if(vUrl || tasa) {
-                let u = {}; if(vUrl) u.videoId = vUrl.split('v=')[1] || vUrl; if(tasa) u.tasa = parseFloat(tasa);
+                let u = {}; if(vUrl) u.videoId = extractID(vUrl); if(tasa) u.tasa = parseFloat(tasa);
                 await db.collection("config").doc("hero").set(u, {merge:true});
             }
-            if(pN && pP && pU) await db.collection("productos").add({ n: pN, p: parseInt(pP), url: pU });
-            alert("Sistema Actualizado"); location.reload();
+            if(pN && pP && pU) await db.collection("productos").add({ n: pN, cap: pC, p: parseInt(pP), url: pU });
+            alert("Sincronizado"); location.reload();
         }
 
-        async function borrarProd(id) { if(confirm("¿Eliminar?")) { await db.collection("productos").doc(id).delete(); renderStore(); } }
+        async function borrarProd(id) { if(confirm("¿Borrar?")) { await db.collection("productos").doc(id).delete(); renderStore(); } }
+        window.onkeydown = (e) => { if(e.altKey && e.key === 'a') document.getElementById('admin-modal').style.display = 'flex'; };
         function closeAdmin() { document.getElementById('admin-modal').style.display = 'none'; }
-        function toggleCart() { const m = document.getElementById('cart-modal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
-        function addToCart(n, p) { cart.push({n, p}); updateUI(); }
+        function addToCart(n, p, url) { cart.push({n, p, url}); updateUI(); }
         function updateUI() {
             const cont = document.getElementById('cart-items'); let total = 0; cont.innerHTML = "";
-            cart.forEach((it) => { total += it.p; cont.innerHTML += `<div class="flex justify-between text-xs font-bold uppercase"><span>${it.n}</span><span>RD$ ${it.p.toLocaleString()}</span></div>`; });
+            cart.forEach((it) => { total += it.p; cont.innerHTML += `<div class="flex justify-between text-[9px] font-black uppercase"><span>${it.n}</span><span>RD$ ${it.p.toLocaleString()}</span></div>`; });
             document.getElementById('total-rd').innerText = "RD$ " + total.toLocaleString();
             document.getElementById('cart-count').innerText = cart.length;
             renderPayPal((total / TASA).toFixed(2));
         }
-
+        function toggleCart() { const m = document.getElementById('cart-modal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
         function renderPayPal(usd) {
             document.getElementById('paypal-button-container').innerHTML = '';
             if(usd > 0) paypal.Buttons({
                 createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: usd } }] }),
-                onApprove: (data, actions) => actions.order.capture().then(() => { alert('Pago Exitoso'); cart = []; updateUI(); toggleCart(); })
+                onApprove: (data, actions) => actions.order.capture().then(() => { alert('Pago Éxito'); cart = []; updateUI(); toggleCart(); })
             }).render('#paypal-button-container');
         }
-
         function checkoutWhatsApp() {
             const cliente = document.getElementById('cust-name').value || "Cliente";
             let msg = `🛍️ *ORDEN VIBEPHONE RD*\n👤 *Cliente:* ${cliente}\n\n`;
