@@ -1,388 +1,332 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIBEPHONE RD | GLOBAL ENTERPRISE SYSTEM</title>
+    <title>VIBEPHONE RD | GLOBAL ELITE MARKETPLACE</title>
     
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        :root { --v-blue: #0071e3; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f5f7; overflow-x: hidden; }
+        :root { --primary: #0071e3; --bg-overlay: rgba(255, 255, 255, 0.9); }
         
-        #master-bg { position: fixed; inset: 0; z-index: -1; opacity: 0.3; pointer-events: none; }
-        #master-bg video, #master-bg img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* LOGIN SEGURO */
-        #login-screen { 
-            display: none; position: fixed; inset: 0; z-index: 11000; 
-            background: rgba(255,255,255,0.8); backdrop-filter: blur(50px);
-            align-items: center; justify-content: center; opacity: 0; transition: 0.5s;
+        /* --- LÓGICA DE PANTALLAS (o2kitek) --- */
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-attachment: fixed; 
+            background-size: cover; 
+            transition: 0.5s;
+            /* Optimización Retina: Un píxel estándar equivale a 4 de retina [cite: 42, 91] */
+            image-rendering: -webkit-optimize-contrast; 
         }
-        #login-screen.active { display: flex; opacity: 1; }
 
-        /* ADMIN PORTAL GIGANTE */
-        #admin-portal { 
-            display: none; position: fixed; inset: 0; background: #fff; z-index: 10000; 
-            overflow-y: auto; transform: translateY(100%); transition: 0.9s cubic-bezier(0.85, 0, 0.15, 1);
+        /* Ajuste visual al tamaño y resolución de cada pantalla [cite: 5, 54] */
+        .glass-layer { background: var(--bg-overlay); min-height: 100vh; backdrop-blur: 8px; }
+
+        /* Adaptabilidad Móvil: Vertical y Horizontal [cite: 38, 87] */
+        @media (max-width: 768px) {
+            .product-card img { max-width: 100%; }
+            #side-cart { width: 100% !important; }
         }
-        #admin-portal.active { display: block; transform: translateY(0); }
 
-        .card-black { background: #000; color: #fff; border-radius: 55px; padding: 60px; }
-        .card-white { background: #fff; border-radius: 55px; padding: 60px; border: 1px solid #eee; box-shadow: 0 30px 60px rgba(0,0,0,0.02); }
-        .input-vibe { background: #f8f8f9; border: 2px solid #efefef; padding: 22px; border-radius: 25px; font-weight: 800; width: 100%; transition: 0.3s; }
-        .input-vibe:focus { border-color: var(--v-blue); outline: none; background: #fff; }
+        /* Estilos de Temporada Automáticos */
+        body.season-mothers { --primary: #d4418e; background-image: url('https://images.unsplash.com/photo-1526047932273-341f2a7631f9?q=80&w=1920'); }
+        body.season-normal { background-image: url('https://images.unsplash.com/photo-1616077168079-7e09a677fb2c?q=80&w=1920'); }
+        
+        .season-mothers .product-card { border-color: #fbcfe8; border-width: 3px; }
 
-        /* ETIQUETAS DE OFERTA */
-        .badge-oferta { background: #ff3b30; color: #fff; padding: 12px 25px; border-radius: 100px; font-size: 11px; font-weight: 900; text-transform: uppercase; position: absolute; top: 40px; left: 40px; z-index: 20; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-
-        #side-cart { position: fixed; top: 0; right: -100%; width: 100%; max-width: 600px; height: 100%; background: #fff; z-index: 5000; transition: 0.8s cubic-bezier(0.85, 0, 0.15, 1); box-shadow: -40px 0 100px rgba(0,0,0,0.1); }
+        .product-card { background: #fff; border-radius: 20px; padding: 20px; border: 2px solid #d2d2d7; transition: 0.3s; position: relative; }
+        .whatsapp-btn { position: fixed; bottom: 25px; right: 25px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; z-index: 9999; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        
+        #side-cart { position: fixed; top: 0; right: -100%; width: 450px; height: 100%; background: white; z-index: 10000; transition: 0.5s; display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.1); }
         #side-cart.active { right: 0; }
+        
+        .badge-oferta { background: #ff3b30; color: white; padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; position: absolute; top: 15px; left: 15px; z-index: 10; }
+        #admin-portal { display: none; position: fixed; inset: 0; background: #f5f5f7; z-index: 20000; padding: 40px; overflow-y: auto; }
     </style>
 </head>
-<body>
+<body id="main-body" class="season-normal">
 
-    <div id="master-bg"></div>
-    <div id="toast-center" class="fixed top-10 right-10 z-[12000] space-y-4"></div>
+<div class="glass-layer">
+    <a href="https://wa.me/18098182320" class="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
 
-    <div id="login-screen">
-        <div class="bg-white p-16 rounded-[60px] shadow-2xl text-center w-[450px]">
-            <div class="w-20 h-20 bg-black rounded-3xl mx-auto mb-8 flex items-center justify-center text-white text-4xl font-black">V</div>
-            <h2 class="text-2xl font-black mb-10 uppercase tracking-tighter">Acceso de Seguridad</h2>
-            <input type="password" id="admin-pass" placeholder="PASSWORD" class="input-vibe text-center text-2xl mb-8">
-            <button onclick="logic.auth()" class="w-full bg-black text-white py-6 rounded-3xl font-black uppercase text-xs tracking-widest">Verificar</button>
-            <button onclick="logic.closeLogin()" class="mt-8 text-[10px] font-black text-gray-400 uppercase">Cancelar</button>
-        </div>
-    </div>
-
-    <nav class="sticky top-0 z-[4000] bg-white/80 backdrop-blur-3xl border-b border-gray-100">
-        <div class="max-w-[1800px] mx-auto px-12 py-8 flex justify-between items-center">
-            <div class="flex items-center gap-6">
-                <div class="w-16 h-16 bg-black rounded-2xl flex items-center justify-center text-white font-black text-3xl">V</div>
-                <div>
-                    <h1 class="text-2xl font-black tracking-tighter leading-none uppercase">VibePhone RD</h1>
-                    <p id="nav-address" class="text-[10px] font-black text-blue-600 uppercase tracking-[0.4em] mt-2">Cargando...</p>
-                </div>
+    <nav class="sticky top-0 z-[5000] bg-white/80 backdrop-blur-md border-b px-8 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-black rounded-lg flex items-center justify-center text-white font-black text-xl">V</div>
+            <div>
+                <h1 class="font-black text-sm uppercase tracking-tighter">VIBEPHONE RD</h1>
+                <p class="text-[8px] text-gray-500 font-bold uppercase tracking-[3px]">Global Marketplace</p>
             </div>
-            <button onclick="ui.toggleCart()" class="relative group">
-                <i class="fas fa-shopping-bag text-3xl transition group-hover:scale-110"></i>
-                <span id="cart-badge" class="absolute -top-3 -right-3 bg-red-600 text-white text-[10px] w-7 h-7 rounded-full flex items-center justify-center border-4 border-white font-black">0</span>
-            </button>
         </div>
+        <button onclick="ui.toggleCart(true)" class="p-3 bg-gray-100 rounded-full relative hover:bg-gray-200 transition">
+            <i class="fas fa-shopping-bag text-gray-800"></i>
+            <span id="cart-badge" class="absolute top-0 right-0 bg-red-600 text-white text-[9px] w-5 h-5 rounded-full flex items-center justify-center font-bold border-2 border-white">0</span>
+        </button>
     </nav>
 
-    <header class="max-w-[1500px] mx-auto px-12 py-40 text-center">
-        <h2 class="text-9xl font-black tracking-tighter italic leading-[0.8] mb-16">PURA <br><span class="text-blue-600">INGENIERÍA.</span></h2>
-        <div class="max-w-4xl mx-auto mb-20">
-            <p class="text-2xl text-gray-500 font-bold leading-relaxed">
-                VibePhone RD es el epicentro de la exclusividad tecnológica en la República Dominicana. Hemos construido un ecosistema donde la potencia de Apple se encuentra con una logística impecable. Nuestra política es clara: se aparta con un 70% del valor y el completivo se entrega al recibir tu equipo, garantizando una transacción de nivel empresarial.
-            </p>
-        </div>
-        <div class="inline-flex items-center gap-10 bg-white border p-10 rounded-[45px] shadow-sm font-black uppercase text-xs">
-            <span class="text-red-500">Política de Apartado</span>
-            <div class="h-6 w-[2px] bg-gray-200"></div>
-            <span>70% Inicial <i class="fas fa-arrow-right mx-4 text-blue-600"></i> 30% Contra Entrega</span>
-        </div>
+    <header class="py-20 text-center">
+        <h2 id="main-title" class="text-6xl font-extrabold italic tracking-tighter uppercase">TECNOLOGÍA <span class="text-blue-600">SIN LÍMITES.</span></h2>
+        <p class="text-gray-500 font-bold mt-4 italic text-lg">"Pura Ingeniería. El Estándar Global en tus manos."</p>
     </header>
 
-    <main id="product-grid" class="max-w-[1800px] mx-auto px-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-60"></main>
+    <main id="product-grid" class="max-w-[1400px] mx-auto px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-32"></main>
 
-    <footer class="bg-white border-t py-40">
-        <div class="max-w-[1800px] mx-auto px-12 grid grid-cols-1 md:grid-cols-3 gap-32">
+    <footer class="bg-black text-white py-20 px-10">
+        <div class="max-w-[1400px] mx-auto grid md:grid-cols-3 gap-16 border-b border-gray-800 pb-16">
             <div>
-                <h4 class="text-5xl font-black italic mb-10 tracking-tighter">VIBEPHONE RD</h4>
-                <p class="text-gray-400 font-bold text-xl leading-relaxed">Liderando la revolución tecnológica con estándares de importación directa y soporte especializado.</p>
+                <h4 class="font-black italic text-xl mb-6">VIBEPHONE RD</h4>
+                <p class="text-gray-400 text-sm leading-relaxed">Líderes en importación de equipos de alta gama. Cada equipo se aparta con un 70%. No realizamos envíos, solo recogida física.</p>
             </div>
-            <div class="space-y-8">
-                <h5 class="text-blue-600 font-black text-xs uppercase tracking-[0.5em]">Oficina Central</h5>
-                <p id="f-addr" class="text-3xl font-black italic tracking-tighter">Cargando...</p>
-                <p id="f-phone" class="text-2xl font-bold text-gray-400">Cargando...</p>
+            <div>
+                <h4 class="text-[10px] font-black uppercase text-gray-500 mb-6 tracking-widest">Atención al Cliente</h4>
+                <p class="text-blue-500 text-3xl font-black">+1 (809) 818-2320</p>
+                <p class="text-gray-500 text-xs mt-4">Santo Domingo, República Dominicana.</p>
             </div>
-            <div class="card-black !p-12 !rounded-[45px]">
-                <p class="text-3xl font-black italic mb-8 uppercase tracking-tighter">Servicio Concierge</p>
-                <button onclick="logic.contactWA()" class="w-full bg-white text-black py-6 rounded-3xl font-black uppercase text-xs hover:bg-blue-600 hover:text-white transition">Contactar WhatsApp</button>
+            <div>
+                <h4 class="text-[10px] font-black uppercase text-gray-500 mb-6 tracking-widest">Seguridad Vibe</h4>
+                <p class="text-gray-400 text-xs">Verificación OTP obligatoria para baucher digital. Transparencia total en su proceso de compra.</p>
             </div>
         </div>
+        <p class="text-center pt-10 text-[10px] font-bold text-gray-600 uppercase tracking-widest">© 2026 VIBEPHONE RD - INGENIERÍA RESPONSIVA MULTIPANTALLA.</p>
     </footer>
+</div>
 
-    <div id="side-cart" class="flex flex-col">
-        <div class="p-14 border-b flex justify-between items-center">
-            <h3 class="text-5xl font-black italic tracking-tighter">Bolsa</h3>
-            <button onclick="ui.toggleCart()"><i class="fas fa-times text-4xl text-gray-300"></i></button>
+<div id="side-cart">
+    <div class="p-8 border-b flex justify-between items-center bg-gray-50">
+        <h3 class="font-black italic text-2xl uppercase">Tu Bolsa</h3>
+        <button onclick="ui.toggleCart(false)" class="text-2xl hover:text-red-600 transition"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="cart-list" class="flex-1 p-8 overflow-y-auto space-y-4"></div>
+    <div class="p-8 border-t bg-gray-50 space-y-6">
+        <div id="otp-section" class="space-y-3">
+            <p class="text-[10px] font-black text-gray-400 uppercase">1. Identificación del Cliente</p>
+            <input id="client-email" type="email" placeholder="Correo para recibir Baucher" class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-blue-600 outline-none transition">
+            <button onclick="logic.sendOTP()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-blue-700 transition">Recibir Código de Verificación</button>
         </div>
-        <div id="cart-list" class="flex-grow p-14 overflow-y-auto space-y-12"></div>
-        <div class="p-14 border-t bg-gray-50/50 space-y-8">
-            <div class="grid grid-cols-2 gap-8">
-                <div class="bg-blue-600 p-10 rounded-[45px] text-white shadow-2xl shadow-blue-200">
-                    <span class="text-[10px] font-black uppercase tracking-widest opacity-60">Pago de Apartado (70%)</span>
-                    <p id="cart-70" class="text-4xl font-black mt-2">RD$ 0</p>
-                </div>
-                <div class="bg-white border p-10 rounded-[45px]">
-                    <span class="text-[10px] font-black uppercase tracking-widest text-gray-400">Restante al Recibir (30%)</span>
-                    <p id="cart-30" class="text-4xl font-black mt-2 text-gray-700">RD$ 0</p>
-                </div>
+        <div id="otp-verify" class="hidden space-y-3">
+            <p class="text-[10px] font-black text-gray-400 uppercase">2. Ingrese Código de 6 Dígitos</p>
+            <input id="verify-code" placeholder="0 0 0 0 0 0" class="w-full border-2 border-blue-600 p-4 rounded-xl text-center font-black text-2xl tracking-[10px] outline-none">
+            <button onclick="logic.confirmPurchase()" class="w-full bg-black text-white py-4 rounded-xl font-black uppercase text-xs tracking-widest">Generar Factura de Apartado</button>
+        </div>
+        <div id="payment-methods" class="hidden space-y-4 p-5 bg-blue-50 rounded-2xl border-2 border-blue-200">
+            <h4 class="font-black text-xs uppercase text-blue-800 text-center">Datos para Transferencia (70%)</h4>
+            <div class="text-[12px] font-bold space-y-3 text-blue-900">
+                <p class="flex justify-between border-b border-blue-200 pb-2"><span>BANRESERVAS:</span> <span class="text-black">960-XXXXXX-X</span></p>
+                <p class="flex justify-between border-b border-blue-200 pb-2"><span>POPULAR:</span> <span class="text-black">780-XXXXXX-X</span></p>
+                <p class="text-center text-red-600 uppercase text-[10px] pt-2">Reporte el pago para validar su reserva</p>
             </div>
-            <button onclick="logic.contactWA()" class="w-full bg-black text-white py-8 rounded-[35px] font-black uppercase text-xs tracking-[0.4em]">Finalizar Pedido</button>
+            <button onclick="logic.finishWithWhatsApp()" class="w-full bg-green-500 text-white py-4 rounded-xl font-black uppercase text-xs flex items-center justify-center gap-3 hover:bg-green-600 transition shadow-lg">
+                <i class="fab fa-whatsapp text-xl"></i> Reportar Pago vía WhatsApp
+            </button>
+        </div>
+        <div class="pt-4 border-t border-gray-200">
+            <div class="flex justify-between font-black text-gray-500 text-sm uppercase"><span>Total del Equipo:</span> <span id="cart-total">RD$ 0</span></div>
+            <div class="flex justify-between font-black text-blue-600 text-xl italic uppercase mt-2"><span>Monto Apartado (70%):</span> <span id="cart-70">RD$ 0</span></div>
         </div>
     </div>
+</div>
 
-    <div id="admin-portal">
-        <div class="max-w-[1700px] mx-auto p-24">
-            <div class="flex justify-between items-center mb-24">
-                <h2 class="text-7xl font-black italic tracking-tighter uppercase">Master Business Console</h2>
-                <button onclick="logic.logout()" class="bg-red-500 text-white px-12 py-6 rounded-full font-black uppercase text-xs">Cerrar Sistema</button>
+<div id="admin-portal">
+    <div class="max-w-[1200px] mx-auto bg-white p-12 rounded-[40px] shadow-2xl">
+        <div class="flex justify-between items-center mb-12 border-b pb-6">
+            <h2 class="text-4xl font-black italic uppercase tracking-tighter text-gray-800">Gestión de Ventas VibePhone</h2>
+            <button onclick="ui.closeAdmin()" class="bg-red-500 text-white px-8 py-3 rounded-full text-xs font-black hover:bg-red-600 transition">CERRAR CONSOLA</button>
+        </div>
+        <div class="grid lg:grid-cols-3 gap-16">
+            <div class="space-y-5 bg-gray-50 p-8 rounded-3xl">
+                <h4 class="font-black text-xs uppercase text-gray-400 mb-4 tracking-widest">Publicar Nuevo Equipo</h4>
+                <input id="p-n" placeholder="Nombre (Ej: iPhone 15 Pro)" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-blue-600">
+                <input id="p-p" type="number" placeholder="Precio RD$" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-blue-600">
+                <input id="p-u" placeholder="URL Imagen (HD/4Mpx)" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-blue-600">
+                <input id="p-days" type="number" placeholder="Días de Oferta (Reloj)" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-blue-600">
+                <button onclick="logic.saveProduct()" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-blue-700 transition">Subir al Marketplace</button>
             </div>
-
-            <div class="grid lg:grid-cols-3 gap-12 mb-24">
-                <div class="lg:col-span-2 card-white">
-                    <h4 class="font-black text-xs uppercase text-blue-500 mb-12">Analítica de Ventas</h4>
-                    <canvas id="salesChart" height="150"></canvas>
-                </div>
-                <div class="card-black flex flex-col justify-between">
-                    <div>
-                        <h4 class="text-zinc-500 font-bold uppercase text-[10px]">Capital de Inventario</h4>
-                        <p id="adm-cash" class="text-8xl font-black mt-8 tracking-tighter">RD$ 0</p>
-                    </div>
-                    <div class="pt-12 border-t border-zinc-800 flex justify-between font-black text-xs">
-                        <span>Productos: <b id="adm-count">0</b></span>
-                        <span class="text-green-500">Sincronizado</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-black !bg-zinc-900 mb-12">
-                <h3 class="text-4xl font-black mb-12 tracking-tighter italic"><i class="fas fa-lock text-yellow-500 mr-4"></i> Datos de Recepción de Pagos (Privado)</h3>
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <input type="text" id="priv-card" placeholder="Número de Tarjeta / Cuenta" class="input-vibe !bg-zinc-800 !border-zinc-700 !text-white">
-                    <input type="text" id="priv-bank" placeholder="Nombre del Banco" class="input-vibe !bg-zinc-800 !border-zinc-700 !text-white">
-                    <input type="text" id="priv-code" placeholder="Código de Comercio / API Key" class="input-vibe !bg-zinc-800 !border-zinc-700 !text-white">
-                    <button onclick="logic.savePrivate()" class="bg-blue-600 text-white py-6 rounded-3xl font-black uppercase text-xs">Guardar Datos Privados</button>
-                </div>
-                <p class="text-[10px] font-black text-zinc-500 mt-8 uppercase tracking-[0.3em]">⚠️ Estos datos solo son visibles para ti en este panel y se usan para la gestión interna de tus cobros.</p>
-            </div>
-
-            <div class="grid lg:grid-cols-2 gap-12 mb-24">
-                <div class="card-white">
-                    <h3 class="text-4xl font-black mb-12 italic uppercase">Identidad & Multimedia</h3>
-                    <div class="space-y-6">
-                        <input type="text" id="conf-addr" placeholder="Dirección Física" class="input-vibe">
-                        <input type="text" id="conf-phone" placeholder="WhatsApp (Ej: 809...)" class="input-vibe">
-                        <div class="border-2 border-dashed p-8 rounded-[35px] text-center bg-gray-50">
-                            <p class="font-black text-[10px] uppercase mb-4 text-gray-400">Subir Video o Imagen de Fondo</p>
-                            <input type="file" id="file-bg" class="text-xs font-bold mb-4">
-                            <p class="text-[10px] text-gray-300">O usa una URL:</p>
-                            <input type="text" id="conf-media" placeholder="URL Multimedia" class="input-vibe mt-4">
-                        </div>
-                        <button onclick="logic.saveSettings()" class="w-full bg-blue-600 text-white py-7 rounded-[35px] font-black uppercase text-xs">Actualizar Sitio</button>
-                    </div>
-                </div>
-
-                <div class="card-white">
-                    <h3 class="text-4xl font-black mb-12 uppercase italic">Inventario Maestro</h3>
-                    <div class="space-y-6">
-                        <input type="text" id="p-n" placeholder="Nombre del Equipo" class="input-vibe">
-                        <div class="grid grid-cols-2 gap-4">
-                            <input type="number" id="p-p" placeholder="Precio Total RD$" class="input-vibe">
-                            <select id="p-oferta" class="input-vibe font-black uppercase text-xs">
-                                <option value="no">Precio Normal</option>
-                                <option value="si">OFERTA ACTIVA 🔥</option>
-                            </select>
-                        </div>
-                        <input type="text" id="p-desc" placeholder="Detalles (Capacidad, Batería, Estado)" class="input-vibe">
-                        <div class="p-6 bg-gray-50 rounded-[30px] border">
-                            <p class="text-[10px] font-black uppercase text-gray-400 mb-2">Imagen del Producto (Subida o URL)</p>
-                            <input type="file" id="file-prod" class="text-xs mb-4">
-                            <input type="text" id="p-u" placeholder="URL Imagen" class="input-vibe">
-                        </div>
-                        <button onclick="logic.addProduct()" class="w-full bg-black text-white py-7 rounded-[35px] font-black uppercase text-xs">Publicar Equipo</button>
-                    </div>
-                </div>
+            <div class="lg:col-span-2 overflow-x-auto">
+                <h4 class="font-black text-xs uppercase text-gray-400 mb-6 tracking-widest">Registro de Ventas x Factura</h4>
+                <table class="w-full text-left text-sm">
+                    <thead><tr class="border-b uppercase font-black text-gray-400 text-[10px]">
+                        <th class="py-4">Factura #</th><th>Cliente</th><th>Total</th><th>Apartado</th><th>Estado</th>
+                    </tr></thead>
+                    <tbody id="sales-table" class="font-bold text-gray-700"></tbody>
+                </table>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        const firebaseConfig = { 
-            apiKey: "AIzaSyByV8-3X8kR_TlxV7-H6m5jW7L-p_z1r4", 
-            authDomain: "phonestorerd.firebaseapp.com", 
-            projectId: "phonestorerd", 
-            storageBucket: "phonestorerd.appspot.com", 
-            messagingSenderId: "360706963034", 
-            appId: "1:360706963034:web:49d1102e8ca73d55918a63" 
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const storage = firebase.storage();
+<script>
+    // --- CONFIGURACIÓN ---
+    emailjs.init("YFdmH2dv7ubtkJzod");
+    firebase.initializeApp({ projectId: "mi-tienda-aaf07" });
+    const db = firebase.firestore();
 
-        let products = [];
-        let cart = JSON.parse(localStorage.getItem('vibe_mega_cart')) || [];
+    let products = [];
+    let cart = [];
+    let activeOTP = null;
+    let currentInvoice = "";
+    let currentApartado = 0;
 
-        window.addEventListener('keydown', (e) => {
-            if(e.altKey && e.key.toLowerCase() === 'a') {
-                e.preventDefault();
-                document.getElementById('login-screen').classList.add('active');
-                document.getElementById('admin-pass').focus();
-            }
-        });
-
-        const logic = {
-            async init() {
-                const pSnap = await db.collection("productos").get();
-                products = pSnap.docs.map(doc => ({id: doc.id, ...doc.data()}));
-                const cSnap = await db.collection("config").doc("main").get();
-                if(cSnap.exists) this.applySettings(cSnap.data());
+    const logic = {
+        init() {
+            this.handleCalendar();
+            this.setupAdmin();
+            db.collection("productos").onSnapshot(snap => {
+                products = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
                 this.render();
-                ui.updateCart();
-            },
+            });
+            this.loadSales();
+        },
 
-            applySettings(d) {
-                document.getElementById('nav-address').innerText = d.addr || "SANTO DOMINGO, RD";
-                document.getElementById('f-addr').innerText = d.addr || "DISTRITO NACIONAL";
-                document.getElementById('f-phone').innerText = d.phone || "809-000-0000";
-                if(d.media) {
-                    const bg = document.getElementById('master-bg');
-                    bg.innerHTML = d.media.includes('.mp4') ? `<video src="${d.media}" autoplay muted loop playsinline></video>` : `<img src="${d.media}">`;
+        handleCalendar() {
+            const body = document.getElementById('main-body');
+            const title = document.getElementById('main-title');
+            const month = new Date().getMonth(); 
+            // Automatización: Mayo = Mes de las Madres
+            if(month === 4) { 
+                body.className = "season-mothers"; 
+                title.innerHTML = "MAMÁ MERECE <span class='text-pink-600'>LO MEJOR.</span>";
+            }
+        },
+
+        setupAdmin() {
+            window.addEventListener('keydown', (e) => {
+                if(e.altKey && e.key.toLowerCase() === 'a') {
+                    if(prompt("ADMIN PASSWORD:") === "Avd121094") document.getElementById('admin-portal').style.display = 'block';
                 }
-            },
+            });
+        },
 
-            render() {
-                const grid = document.getElementById('product-grid');
-                grid.innerHTML = products.map(p => `
-                    <div class="bg-white p-14 rounded-[65px] border border-gray-50 hover:shadow-2xl transition-all group relative">
-                        ${p.oferta === 'si' ? '<div class="badge-oferta">Oferta Especial</div>' : ''}
-                        <img src="${p.url}" class="h-72 w-full object-contain mb-12 group-hover:scale-110 transition duration-700">
-                        <h4 class="text-3xl font-black italic tracking-tighter uppercase mb-2">${p.n}</h4>
-                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-8">${p.desc || 'Especificación Full'}</p>
-                        <p class="text-4xl font-black ${p.oferta === 'si' ? 'text-red-600' : 'text-blue-600'} mb-12">RD$ ${Number(p.p).toLocaleString()}</p>
-                        <button onclick="logic.addToCart('${p.id}')" class="w-full bg-black text-white py-7 rounded-[25px] font-black uppercase text-[11px] tracking-widest hover:bg-blue-600 transition">Añadir a Bolsa</button>
+        render() {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = products.map(p => `
+                <div class="product-card group">
+                    ${p.expireAt > Date.now() ? '<div class="badge-oferta">OFERTA LIMITADA</div>' : ''}
+                    <div class="h-56 overflow-hidden flex items-center justify-center mb-6">
+                        <img src="${p.url}" class="max-h-full object-contain group-hover:scale-110 transition duration-500">
                     </div>
+                    <h4 class="font-black text-xs uppercase tracking-tighter text-gray-400">${p.n}</h4>
+                    <p class="text-2xl font-black text-blue-600 mb-6 mt-1">RD$ ${p.p.toLocaleString()}</p>
+                    <button onclick="logic.addToCart('${p.id}')" class="w-full bg-black text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition duration-300">Añadir a Bolsa</button>
+                </div>
+            `).join('');
+        },
+
+        async sendOTP() {
+            const email = document.getElementById('client-email').value;
+            if(!email.includes('@')) return alert("Por favor, ingrese un email válido.");
+            activeOTP = Math.floor(100000 + Math.random() * 900000).toString();
+            
+            await emailjs.send("Avd121094", "template_eale2lb", {
+                to_email: email,
+                code: activeOTP,
+                message: `SU CÓDIGO DE VERIFICACIÓN VIBEPHONE RD ES: ${activeOTP}`
+            });
+            
+            document.getElementById('otp-section').classList.add('hidden');
+            document.getElementById('otp-verify').classList.remove('hidden');
+            alert("📩 Código enviado con éxito.");
+        },
+
+        async confirmPurchase() {
+            const code = document.getElementById('verify-code').value;
+            if(code !== activeOTP) return alert("Código Incorrecto.");
+
+            currentInvoice = "VIBE-" + Math.floor(10000 + Math.random() * 90000);
+            const total = cart.reduce((a, b) => a + b.p, 0);
+            currentApartado = total * 0.7;
+
+            // Registro en Base de Datos por Factura
+            await db.collection("ventas").add({
+                factura: currentInvoice,
+                email: document.getElementById('client-email').value,
+                total: total,
+                apartado: currentApartado,
+                fecha: new Date(),
+                status: "ESPERANDO REPORTE"
+            });
+
+            // Baucher por Email
+            await emailjs.send("Avd121094", "template_eale2lb", {
+                to_email: document.getElementById('client-email').value,
+                message: `BAUCHER DE APARTADO VIBEPHONE RD\n\nFACTURA: ${currentInvoice}\nTOTAL: RD$ ${total.toLocaleString()}\nMONTO APARTADO (70%): RD$ ${currentApartado.toLocaleString()}\n\nFavor de realizar el pago y reportar por WhatsApp.`
+            });
+
+            document.getElementById('otp-verify').classList.add('hidden');
+            document.getElementById('payment-methods').classList.remove('hidden');
+            alert("✅ Factura Generada. Revise sus datos de pago.");
+        },
+
+        finishWithWhatsApp() {
+            const msg = `¡Hola VibePhone RD! Reporto mi pago del 70%.\n\nFactura: ${currentInvoice}\nMonto Apartado: RD$ ${currentApartado.toLocaleString()}.\nAdjunto comprobante.`;
+            window.open(`https://wa.me/18098182320?text=${encodeURIComponent(msg)}`);
+            
+            // Limpieza Total
+            cart = [];
+            ui.updateCart();
+            ui.toggleCart(false);
+            document.getElementById('payment-methods').classList.add('hidden');
+            document.getElementById('otp-section').classList.remove('hidden');
+        },
+
+        addToCart(id) {
+            cart.push(products.find(x => x.id === id));
+            ui.updateCart();
+            ui.toggleCart(true);
+        },
+
+        async saveProduct() {
+            const days = Number(document.getElementById('p-days').value);
+            await db.collection("productos").add({
+                n: document.getElementById('p-n').value,
+                p: Number(document.getElementById('p-p').value),
+                url: document.getElementById('p-u').value,
+                expireAt: days > 0 ? Date.now() + (days * 86400000) : 0
+            });
+            alert("Producto Publicado Correctamente.");
+        },
+
+        loadSales() {
+            db.collection("ventas").orderBy("fecha", "desc").onSnapshot(snap => {
+                document.getElementById('sales-table').innerHTML = snap.docs.map(doc => `
+                    <tr class="border-b hover:bg-gray-50 transition">
+                        <td class="py-5 font-black text-blue-600">${doc.data().factura}</td>
+                        <td class="text-[11px]">${doc.data().email}</td>
+                        <td>RD$ ${doc.data().total.toLocaleString()}</td>
+                        <td class="text-red-500">RD$ ${doc.data().apartado.toLocaleString()}</td>
+                        <td class="italic text-[10px] text-gray-400">${doc.data().status}</td>
+                    </tr>
                 `).join('');
-            },
+            });
+        }
+    };
 
-            addToCart(id) {
-                const item = products.find(p => p.id === id);
-                const exist = cart.find(c => c.id === id);
-                if(exist) exist.qty++; else cart.push({...item, qty: 1});
-                localStorage.setItem('vibe_mega_cart', JSON.stringify(cart));
-                ui.updateCart();
-                ui.toast("💎 AGREGADO CON ÉXITO");
-            },
+    const ui = {
+        toggleCart(s) { document.getElementById('side-cart').classList.toggle('active', s); },
+        closeAdmin() { document.getElementById('admin-portal').style.display = 'none'; },
+        updateCart() {
+            const total = cart.reduce((a, b) => a + b.p, 0);
+            document.getElementById('cart-list').innerHTML = cart.map((i, index) => `
+                <div class="bg-gray-100 p-5 rounded-2xl flex justify-between items-center animate-fade-in">
+                    <div>
+                        <p class="font-black text-[11px] uppercase text-gray-800">${i.n}</p>
+                        <p class="text-blue-600 font-bold text-sm">RD$ ${i.p.toLocaleString()}</p>
+                    </div>
+                    <button onclick="cart.splice(${index},1); ui.updateCart();" class="text-gray-300 hover:text-red-500"><i class="fas fa-trash"></i></button>
+                </div>
+            `).join('');
+            document.getElementById('cart-badge').innerText = cart.length;
+            document.getElementById('cart-total').innerText = "RD$ " + total.toLocaleString();
+            document.getElementById('cart-70').innerText = "RD$ " + (total * 0.7).toLocaleString();
+        }
+    };
 
-            // --- SEGURIDAD ---
-            auth() {
-                if(document.getElementById('admin-pass').value === "Avd121094") {
-                    this.closeLogin();
-                    document.getElementById('admin-portal').classList.add('active');
-                    this.renderAdmin();
-                } else { ui.toast("❌ ACCESO DENEGADO"); }
-            },
-            closeLogin() { document.getElementById('login-screen').classList.remove('active'); },
-            logout() { document.getElementById('admin-portal').classList.remove('active'); },
-
-            // --- ACCIONES ADMIN ---
-            async uploadFile(fileInput) {
-                const file = fileInput.files[0];
-                if(!file) return null;
-                const ref = storage.ref(`vibe/${file.name}`);
-                await ref.put(file);
-                return await ref.getDownloadURL();
-            },
-
-            async saveSettings() {
-                let url = document.getElementById('conf-media').value;
-                const fileUrl = await this.uploadFile(document.getElementById('file-bg'));
-                if(fileUrl) url = fileUrl;
-
-                await db.collection("config").doc("main").set({
-                    addr: document.getElementById('conf-addr').value,
-                    phone: document.getElementById('conf-phone').value,
-                    media: url
-                }, {merge: true});
-                location.reload();
-            },
-
-            async savePrivate() {
-                const data = {
-                    card: document.getElementById('priv-card').value,
-                    bank: document.getElementById('priv-bank').value,
-                    code: document.getElementById('priv-code').value
-                };
-                await db.collection("config").doc("private").set(data);
-                ui.toast("🔒 DATOS BANCARIOS GUARDADOS");
-            },
-
-            async addProduct() {
-                let url = document.getElementById('p-u').value;
-                const fileUrl = await this.uploadFile(document.getElementById('file-prod'));
-                if(fileUrl) url = fileUrl;
-
-                const data = {
-                    n: document.getElementById('p-n').value,
-                    p: Number(document.getElementById('p-p').value),
-                    url: url,
-                    oferta: document.getElementById('p-oferta').value,
-                    desc: document.getElementById('p-desc').value
-                };
-                await db.collection("productos").add(data);
-                this.init();
-                ui.toast("✅ EQUIPO PUBLICADO");
-            },
-
-            async renderAdmin() {
-                const snap = await db.collection("productos").get();
-                const priv = await db.collection("config").doc("private").get();
-                if(priv.exists) {
-                    document.getElementById('priv-card').value = priv.data().card || '';
-                    document.getElementById('priv-bank').value = priv.data().bank || '';
-                    document.getElementById('priv-code').value = priv.data().code || '';
-                }
-                document.getElementById('adm-count').innerText = snap.size;
-                document.getElementById('adm-cash').innerText = "RD$ " + (snap.size * 62000).toLocaleString();
-                new Chart(document.getElementById('salesChart'), {
-                    type: 'line',
-                    data: { labels: ['L','M','X','J','V','S','D'], datasets: [{ data: [65, 59, 80, 81, 56, 95, 120], borderColor: '#0071e3', tension: 0.4, borderWidth: 10, pointRadius: 0 }] },
-                    options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
-                });
-            },
-
-            contactWA() {
-                const num = document.getElementById('f-phone').innerText.replace(/\D/g,'');
-                window.open(`https://wa.me/${num}?text=Hola, deseo apartar un equipo.`);
-            }
-        };
-
-        const ui = {
-            toggleCart() { document.getElementById('side-cart').classList.toggle('active'); },
-            updateCart() {
-                const list = document.getElementById('cart-list');
-                let total = 0; let count = 0;
-                list.innerHTML = cart.map(i => {
-                    total += (i.p * i.qty); count += i.qty;
-                    return `<div class="flex items-center gap-10"><img src="${i.url}" class="w-24 h-24 object-contain"><div><h5 class="font-black text-xl italic uppercase">${i.n}</h5><p class="text-blue-600 font-black">RD$ ${i.p.toLocaleString()}</p></div></div>`;
-                }).join('');
-                document.getElementById('cart-badge').innerText = count;
-                document.getElementById('cart-70').innerText = "RD$ " + (total * 0.7).toLocaleString();
-                document.getElementById('cart-30').innerText = "RD$ " + (total * 0.3).toLocaleString();
-            },
-            toast(m) {
-                const t = document.createElement('div');
-                t.className = "bg-black text-white px-12 py-6 rounded-[35px] font-black text-xs uppercase shadow-2xl";
-                t.innerText = m;
-                document.getElementById('toast-center').appendChild(t);
-                setTimeout(() => t.remove(), 4000);
-            }
-        };
-
-        logic.init();
-    </script>
+    logic.init();
+</script>
 </body>
 </html>
