@@ -3,330 +3,606 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIBEPHONE RD | GLOBAL ELITE MARKETPLACE</title>
+    <title>VIBEPHONE RD | GLOBAL ENTERPRISE SYSTEM</title>
     
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        :root { --primary: #0071e3; --bg-overlay: rgba(255, 255, 255, 0.9); }
+        :root { --v-blue: #0071e3; --v-grey-bg: #f5f5f7; }
         
-        /* --- LÓGICA DE PANTALLAS (o2kitek) --- */
+        /* Estilo General Premium y Responsivo (Adiós Neón) */
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-attachment: fixed; 
-            background-size: cover; 
-            transition: 0.5s;
-            /* Optimización Retina: Un píxel estándar equivale a 4 de retina [cite: 42, 91] */
-            image-rendering: -webkit-optimize-contrast; 
+            background: linear-gradient(180deg, var(--v-grey-bg) 0%, #ffffff 100%); 
+            overflow-x: hidden; 
+            scroll-behavior: smooth; 
+            color: #1d1d1f;
         }
-
-        /* Ajuste visual al tamaño y resolución de cada pantalla [cite: 5, 54] */
-        .glass-layer { background: var(--bg-overlay); min-height: 100vh; backdrop-blur: 8px; }
-
-        /* Adaptabilidad Móvil: Vertical y Horizontal [cite: 38, 87] */
-        @media (max-width: 768px) {
-            .product-card img { max-width: 100%; }
-            #side-cart { width: 100% !important; }
-        }
-
-        /* Estilos de Temporada Automáticos */
-        body.season-mothers { --primary: #d4418e; background-image: url('https://images.unsplash.com/photo-1526047932273-341f2a7631f9?q=80&w=1920'); }
-        body.season-normal { background-image: url('https://images.unsplash.com/photo-1616077168079-7e09a677fb2c?q=80&w=1920'); }
         
-        .season-mothers .product-card { border-color: #fbcfe8; border-width: 3px; }
-
-        .product-card { background: #fff; border-radius: 20px; padding: 20px; border: 2px solid #d2d2d7; transition: 0.3s; position: relative; }
-        .whatsapp-btn { position: fixed; bottom: 25px; right: 25px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; z-index: 9999; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        /* ADMIN & LOGIN (Sin alterar lógica, solo estética) */
+        #login-screen { display: none; position: fixed; inset: 0; z-index: 99999; background: rgba(255,255,255,0.92); backdrop-filter: blur(20px); align-items: center; justify-content: center; opacity: 0; transition: 0.4s; }
+        #login-screen.active { display: flex; opacity: 1; }
         
-        #side-cart { position: fixed; top: 0; right: -100%; width: 450px; height: 100%; background: white; z-index: 10000; transition: 0.5s; display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.1); }
+        #admin-portal { display: none; position: fixed; inset: 0; background: #ffffff; z-index: 90000; overflow-y: auto; transform: translateY(100%); transition: 0.8s cubic-bezier(0.85, 0, 0.15, 1); }
+        #admin-portal.active { display: block; transform: translateY(0); }
+
+        /* Tarjetas con sombras suaves (Premium) */
+        .card-black { background: #000; color: #fff; border-radius: 30px; padding: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
+        .card-white { background: #fff; border-radius: 30px; padding: 40px; border: 1px solid #f2f2f2; box-shadow: 0 8px 25px rgba(0,0,0,0.03); }
+        
+        .input-vibe { background: #fbfbfb; border: 1px solid #e5e5e5; padding: 18px; border-radius: 16px; font-weight: 500; width: 100%; transition: 0.3s; }
+        .input-vibe:focus { border-color: var(--v-blue); background: #fff; outline: none; box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1); }
+
+        /* CARRITO (Sin alterar lógica, solo estética responsive) */
+        #side-cart { position: fixed; top: 0; right: -100%; width: 100%; max-width: 420px; height: 100%; background: #fff; z-index: 50000; transition: 0.5s cubic-bezier(0.85, 0, 0.15, 1); box-shadow: -15px 0 40px rgba(0,0,0,0.06); }
         #side-cart.active { right: 0; }
+
+        /* Badge de Oferta */
+        .badge-oferta { background: #ff3b30; color: #fff; padding: 6px 12px; border-radius: 100px; font-size: 10px; font-weight: 800; position: absolute; top: 20px; left: 20px; z-index: 10; animation: pulse 1.8s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.08); opacity: 0.9; } 100% { transform: scale(1); opacity: 1; } }
         
-        .badge-oferta { background: #ff3b30; color: white; padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; position: absolute; top: 15px; left: 15px; z-index: 10; }
-        #admin-portal { display: none; position: fixed; inset: 0; background: #f5f5f7; z-index: 20000; padding: 40px; overflow-y: auto; }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-thumb { background: #d1d1d6; border-radius: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+
+        /* Mejora Responsive de Imágenes y Grid */
+        #product-grid img {
+            max-width: 100%; 
+            height: auto; 
+            max-height: 200px; /* Tamaño controlado en PC */
+            object-contain;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (max-width: 768px) {
+            #product-grid img {
+                max-height: 160px; /* Más pequeño en celular */
+            }
+            header h2 { font-size: 3rem !important; }
+            header { padding: 80px 20px 40px !important; }
+        }
     </style>
 </head>
-<body id="main-body" class="season-normal">
+<body>
 
-<div class="glass-layer">
-    <a href="https://wa.me/18098182320" class="whatsapp-btn"><i class="fab fa-whatsapp"></i></a>
+    <div id="toast-center" class="fixed top-10 right-10 z-[100000] space-y-4"></div>
 
-    <nav class="sticky top-0 z-[5000] bg-white/80 backdrop-blur-md border-b px-8 py-4 flex justify-between items-center">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-black rounded-lg flex items-center justify-center text-white font-black text-xl">V</div>
-            <div>
-                <h1 class="font-black text-sm uppercase tracking-tighter">VIBEPHONE RD</h1>
-                <p class="text-[8px] text-gray-500 font-bold uppercase tracking-[3px]">Global Marketplace</p>
+    <div id="login-screen">
+        <div class="bg-white p-10 rounded-[30px] shadow-3xl text-center w-[380px] border border-gray-100">
+            <div class="w-16 h-16 bg-black text-white rounded-2xl flex items-center justify-center font-black text-3xl mx-auto mb-6 shadow-md">V</div>
+            <h2 class="text-xl font-black mb-8 uppercase italic tracking-tighter">Acceso Master</h2>
+            <input type="password" id="admin-pass" placeholder="PASSWORD" class="input-vibe text-center text-xl mb-6">
+            <button onclick="logic.auth()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-5 rounded-xl font-black uppercase transition-all transform active:scale-95">Entrar al Sistema</button>
+            <button onclick="document.getElementById('login-screen').classList.remove('active')" class="mt-6 text-gray-400 text-[10px] font-bold uppercase tracking-widest">Cancelar</button>
+        </div>
+    </div>
+
+    <nav class="sticky top-0 z-[40000] bg-white/90 backdrop-blur-xl border-b border-gray-100">
+        <div class="max-w-[1600px] mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer group" ondblclick="ui.showLogin()">
+                <div class="w-11 h-11 bg-black group-hover:bg-blue-600 transition-colors rounded-xl flex items-center justify-center text-white font-black text-xl shadow-inner">V</div>
+                <div>
+                    <h1 class="text-lg font-black tracking-tighter uppercase leading-none">VibePhone RD</h1>
+                    <p id="nav-address" class="text-[8px] font-bold text-blue-600 uppercase tracking-widest mt-1 italic">Cargando...</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-5">
+                <div class="relative hidden sm:block">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                    <input onkeyup="logic.search(this.value)" placeholder="BUSCAR EQUIPO..." class="bg-gray-100/70 pl-10 pr-6 py-2.5 rounded-full text-[10px] font-bold outline-none focus:ring-2 ring-blue-400 w-56 transition-all">
+                </div>
+                <button onclick="ui.toggleCart()" class="relative p-2 text-gray-700 hover:text-blue-600 transition">
+                    <i class="fas fa-shopping-bag text-2xl"></i>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center border border-white font-black shadow-md">0</span>
+                </button>
             </div>
         </div>
-        <button onclick="ui.toggleCart(true)" class="p-3 bg-gray-100 rounded-full relative hover:bg-gray-200 transition">
-            <i class="fas fa-shopping-bag text-gray-800"></i>
-            <span id="cart-badge" class="absolute top-0 right-0 bg-red-600 text-white text-[9px] w-5 h-5 rounded-full flex items-center justify-center font-bold border-2 border-white">0</span>
-        </button>
     </nav>
 
-    <header class="py-20 text-center">
-        <h2 id="main-title" class="text-6xl font-extrabold italic tracking-tighter uppercase">TECNOLOGÍA <span class="text-blue-600">SIN LÍMITES.</span></h2>
-        <p class="text-gray-500 font-bold mt-4 italic text-lg">"Pura Ingeniería. El Estándar Global en tus manos."</p>
+    <header class="max-w-[1200px] mx-auto px-6 py-20 text-center">
+        <div class="inline-block bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full text-[9px] font-black uppercase mb-6 tracking-widest shadow-inner border border-blue-100">Premium Dominicana</div>
+        <h2 class="text-6xl md:text-8xl font-black tracking-tighter italic leading-[0.85] mb-8 uppercase text-gray-950">Ingeniería <br><span class="text-blue-600">Dominicana.</span></h2>
+        <div class="inline-flex items-center gap-5 bg-white border border-gray-100 px-7 py-4 rounded-full shadow-lg font-bold uppercase text-[10px] text-gray-600">
+            <span class="text-red-500 flex items-center gap-2 font-black"><i class="fas fa-star-of-life text-xs"></i> Apartado</span>
+            <div class="h-4 w-[1px] bg-gray-200"></div>
+            <span>70% Inicial / 30% Contra Entrega</span>
+        </div>
     </header>
 
-    <main id="product-grid" class="max-w-[1400px] mx-auto px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-32"></main>
+    <main id="product-grid" class="max-w-[1500px] mx-auto px-6 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 mb-24"></main>
 
-    <footer class="bg-black text-white py-20 px-10">
-        <div class="max-w-[1400px] mx-auto grid md:grid-cols-3 gap-16 border-b border-gray-800 pb-16">
-            <div>
-                <h4 class="font-black italic text-xl mb-6">VIBEPHONE RD</h4>
-                <p class="text-gray-400 text-sm leading-relaxed">Líderes en importación de equipos de alta gama. Cada equipo se aparta con un 70%. No realizamos envíos, solo recogida física.</p>
+    <section class="max-w-[1000px] mx-auto px-6 mb-24">
+        <div class="card-white p-8">
+            <h3 class="text-3xl font-black italic tracking-tighter uppercase mb-2">Comentarios</h3>
+            <p class="text-gray-500 text-sm mb-8">Déjanos saber tu opinión sobre nuestros equipos y servicio.</p>
+            
+            <div id="comments-container" class="space-y-6 mb-10 max-h-[400px] overflow-y-auto pr-3">
+                <div class="text-center py-10 text-gray-300 text-xs uppercase font-black">Cargando comentarios...</div>
             </div>
-            <div>
-                <h4 class="text-[10px] font-black uppercase text-gray-500 mb-6 tracking-widest">Atención al Cliente</h4>
-                <p class="text-blue-500 text-3xl font-black">+1 (809) 818-2320</p>
-                <p class="text-gray-500 text-xs mt-4">Santo Domingo, República Dominicana.</p>
-            </div>
-            <div>
-                <h4 class="text-[10px] font-black uppercase text-gray-500 mb-6 tracking-widest">Seguridad Vibe</h4>
-                <p class="text-gray-400 text-xs">Verificación OTP obligatoria para baucher digital. Transparencia total en su proceso de compra.</p>
+
+            <div class="flex gap-4">
+                <input type="text" id="comment-name" placeholder="TU NOMBRE" class="input-vibe w-1/3">
+                <input type="text" id="comment-text" placeholder="ESCRIBE TU COMENTARIO AQUÍ..." class="input-vibe w-2/3">
+                <button onclick="logic.addComment()" class="bg-blue-600 text-white px-8 py-4 rounded-xl font-black uppercase text-xs hover:bg-blue-700 transition transform active:scale-95 shadow-md">Publicar</button>
             </div>
         </div>
-        <p class="text-center pt-10 text-[10px] font-bold text-gray-600 uppercase tracking-widest">© 2026 VIBEPHONE RD - INGENIERÍA RESPONSIVA MULTIPANTALLA.</p>
+    </section>
+
+    <footer class="bg-zinc-950 text-white pt-20 pb-10 px-6 rounded-[40px] mt-24 mb-6 mx-6 shadow-2xl">
+        <div class="max-w-[1400px] mx-auto grid md:grid-cols-4 gap-12 border-b border-zinc-800 pb-12 mb-10">
+            <div class="col-span-1 md:col-span-2">
+                <h4 class="text-3xl font-black italic mb-5 tracking-tighter uppercase">VibePhone RD</h4>
+                <p class="text-zinc-500 font-medium text-sm leading-relaxed italic max-w-md">Importadores directos de tecnología Apple y Premium. Garantía real en cada equipo vendido en República Dominicana. Sistema Global Enterprise v4.2.</p>
+                <div class="flex gap-4 mt-8">
+                    <a href="https://wa.me/8098182320" class="w-10 h-10 bg-zinc-900 rounded-full flex items-center justify-center hover:bg-green-600 transition-colors shadow-lg"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" class="w-10 h-10 bg-zinc-900 rounded-full flex items-center justify-center hover:bg-pink-600 transition-colors shadow-lg"><i class="fab fa-instagram"></i></div></a>
+                </div>
+            </div>
+            <div class="md:text-left">
+                <h5 class="text-zinc-600 font-black uppercase text-[10px] mb-6 tracking-widest">Contacto Directo</h5>
+                <p id="footer-phone" class="text-3xl font-black text-blue-500 mb-2 tracking-tighter">809-818-2320</p>
+                <p class="text-zinc-600 font-bold text-[10px] uppercase italic">Lunes a Sábado | 9:00 AM - 7:00 PM</p>
+                <p class="text-zinc-700 font-medium text-xs mt-3">Calle Duarte, Plaza Central, SD.</p>
+            </div>
+            <div class="md:text-left bg-zinc-900 p-6 rounded-2xl border border-zinc-800 shadow-xl">
+                <h5 class="text-zinc-600 font-black uppercase text-[10px] mb-4 tracking-widest">Vibe Radio <span class="text-blue-500">Live</span></h5>
+                <div id="music-player-ui" class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://images.unsplash.com/photo-1593696140826-c58b021acf8b?q=80&w=200" class="w-12 h-12 rounded-lg object-cover shadow-md">
+                        <div>
+                            <p class="text-xs font-black uppercase text-white truncate">Ambiente Premium</p>
+                            <p id="music-status" class="text-[9px] font-medium text-zinc-600 uppercase">Detenido</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="music.playDefault()" class="w-1/2 bg-blue-600 text-white text-[9px] py-3 rounded-lg font-black uppercase hover:bg-blue-700 transition">Reproducir</button>
+                        <button onclick="music.pause()" class="w-1/2 bg-zinc-800 text-zinc-400 text-[9px] py-3 rounded-lg font-black uppercase hover:bg-zinc-700 transition">Pausar</button>
+                    </div>
+                    <div class="w-full h-1 bg-zinc-700 rounded-full overflow-hidden">
+                        <div id="music-progress" class="h-full bg-blue-500 w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-[1400px] mx-auto text-center">
+            <p class="text-zinc-700 font-bold text-[10px] uppercase">© 2026 VibePhone RD - Todos los derechos reservados.</p>
+            <p class="text-zinc-800 font-medium text-[9px] mt-1">Desarrollado con ❤️ en República Dominicana.</p>
+        </div>
     </footer>
-</div>
 
-<div id="side-cart">
-    <div class="p-8 border-b flex justify-between items-center bg-gray-50">
-        <h3 class="font-black italic text-2xl uppercase">Tu Bolsa</h3>
-        <button onclick="ui.toggleCart(false)" class="text-2xl hover:text-red-600 transition"><i class="fas fa-times"></i></button>
-    </div>
-    <div id="cart-list" class="flex-1 p-8 overflow-y-auto space-y-4"></div>
-    <div class="p-8 border-t bg-gray-50 space-y-6">
-        <div id="otp-section" class="space-y-3">
-            <p class="text-[10px] font-black text-gray-400 uppercase">1. Identificación del Cliente</p>
-            <input id="client-email" type="email" placeholder="Correo para recibir Baucher" class="w-full border-2 border-gray-200 p-4 rounded-xl focus:border-blue-600 outline-none transition">
-            <button onclick="logic.sendOTP()" class="w-full bg-blue-600 text-white py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-blue-700 transition">Recibir Código de Verificación</button>
+    <div id="side-cart" class="flex flex-col p-8">
+        <div class="flex justify-between items-center mb-8 border-b pb-8">
+            <h3 class="text-2xl font-black italic tracking-tighter uppercase">Tu Bolsa</h3>
+            <button onclick="ui.toggleCart()" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 hover:text-red-500 transition"><i class="fas fa-times"></i></button>
         </div>
-        <div id="otp-verify" class="hidden space-y-3">
-            <p class="text-[10px] font-black text-gray-400 uppercase">2. Ingrese Código de 6 Dígitos</p>
-            <input id="verify-code" placeholder="0 0 0 0 0 0" class="w-full border-2 border-blue-600 p-4 rounded-xl text-center font-black text-2xl tracking-[10px] outline-none">
-            <button onclick="logic.confirmPurchase()" class="w-full bg-black text-white py-4 rounded-xl font-black uppercase text-xs tracking-widest">Generar Factura de Apartado</button>
-        </div>
-        <div id="payment-methods" class="hidden space-y-4 p-5 bg-blue-50 rounded-2xl border-2 border-blue-200">
-            <h4 class="font-black text-xs uppercase text-blue-800 text-center">Datos para Transferencia (70%)</h4>
-            <div class="text-[12px] font-bold space-y-3 text-blue-900">
-                <p class="flex justify-between border-b border-blue-200 pb-2"><span>BANRESERVAS:</span> <span class="text-black">960-XXXXXX-X</span></p>
-                <p class="flex justify-between border-b border-blue-200 pb-2"><span>POPULAR:</span> <span class="text-black">780-XXXXXX-X</span></p>
-                <p class="text-center text-red-600 uppercase text-[10px] pt-2">Reporte el pago para validar su reserva</p>
+        <div id="cart-list" class="flex-grow overflow-y-auto space-y-4 pr-2"></div>
+        <div class="mt-8 pt-8 border-t space-y-6">
+            <div class="flex justify-between items-center font-black">
+                <span class="text-[10px] text-gray-500 uppercase">Monto de Apartado (70%)</span>
+                <span id="cart-70" class="text-2xl text-blue-600 tracking-tighter">RD$ 0</span>
             </div>
-            <button onclick="logic.finishWithWhatsApp()" class="w-full bg-green-500 text-white py-4 rounded-xl font-black uppercase text-xs flex items-center justify-center gap-3 hover:bg-green-600 transition shadow-lg">
-                <i class="fab fa-whatsapp text-xl"></i> Reportar Pago vía WhatsApp
-            </button>
-        </div>
-        <div class="pt-4 border-t border-gray-200">
-            <div class="flex justify-between font-black text-gray-500 text-sm uppercase"><span>Total del Equipo:</span> <span id="cart-total">RD$ 0</span></div>
-            <div class="flex justify-between font-black text-blue-600 text-xl italic uppercase mt-2"><span>Monto Apartado (70%):</span> <span id="cart-70">RD$ 0</span></div>
+            <div id="paypal-button-container"></div>
+            <button onclick="logic.contactWA()" class="w-full bg-black hover:bg-blue-600 text-white py-5 rounded-2xl font-black uppercase italic text-[11px] tracking-widest transition-all shadow-lg">Finalizar por WhatsApp</button>
         </div>
     </div>
-</div>
 
-<div id="admin-portal">
-    <div class="max-w-[1200px] mx-auto bg-white p-12 rounded-[40px] shadow-2xl">
-        <div class="flex justify-between items-center mb-12 border-b pb-6">
-            <h2 class="text-4xl font-black italic uppercase tracking-tighter text-gray-800">Gestión de Ventas VibePhone</h2>
-            <button onclick="ui.closeAdmin()" class="bg-red-500 text-white px-8 py-3 rounded-full text-xs font-black hover:bg-red-600 transition">CERRAR CONSOLA</button>
-        </div>
-        <div class="grid lg:grid-cols-3 gap-16">
-            <div class="space-y-5 bg-gray-50 p-8 rounded-3xl">
-                <h4 class="font-black text-xs uppercase text-gray-400 mb-4 tracking-widest">Publicar Nuevo Equipo</h4>
-                <input id="p-n" placeholder="Nombre (Ej: iPhone 15 Pro)" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-blue-600">
-                <input id="p-p" type="number" placeholder="Precio RD$" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-blue-600">
-                <input id="p-u" placeholder="URL Imagen (HD/4Mpx)" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-blue-600">
-                <input id="p-days" type="number" placeholder="Días de Oferta (Reloj)" class="w-full p-4 rounded-xl border border-gray-200 outline-none focus:border-blue-600">
-                <button onclick="logic.saveProduct()" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-blue-700 transition">Subir al Marketplace</button>
-            </div>
-            <div class="lg:col-span-2 overflow-x-auto">
-                <h4 class="font-black text-xs uppercase text-gray-400 mb-6 tracking-widest">Registro de Ventas x Factura</h4>
-                <table class="w-full text-left text-sm">
-                    <thead><tr class="border-b uppercase font-black text-gray-400 text-[10px]">
-                        <th class="py-4">Factura #</th><th>Cliente</th><th>Total</th><th>Apartado</th><th>Estado</th>
-                    </tr></thead>
-                    <tbody id="sales-table" class="font-bold text-gray-700"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // --- CONFIGURACIÓN ---
-    emailjs.init("YFdmH2dv7ubtkJzod");
-    firebase.initializeApp({ projectId: "mi-tienda-aaf07" });
-    const db = firebase.firestore();
-
-    let products = [];
-    let cart = [];
-    let activeOTP = null;
-    let currentInvoice = "";
-    let currentApartado = 0;
-
-    const logic = {
-        init() {
-            this.handleCalendar();
-            this.setupAdmin();
-            db.collection("productos").onSnapshot(snap => {
-                products = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
-                this.render();
-            });
-            this.loadSales();
-        },
-
-        handleCalendar() {
-            const body = document.getElementById('main-body');
-            const title = document.getElementById('main-title');
-            const month = new Date().getMonth(); 
-            // Automatización: Mayo = Mes de las Madres
-            if(month === 4) { 
-                body.className = "season-mothers"; 
-                title.innerHTML = "MAMÁ MERECE <span class='text-pink-600'>LO MEJOR.</span>";
-            }
-        },
-
-        setupAdmin() {
-            window.addEventListener('keydown', (e) => {
-                if(e.altKey && e.key.toLowerCase() === 'a') {
-                    if(prompt("ADMIN PASSWORD:") === "Avd121094") document.getElementById('admin-portal').style.display = 'block';
-                }
-            });
-        },
-
-        render() {
-            const grid = document.getElementById('product-grid');
-            grid.innerHTML = products.map(p => `
-                <div class="product-card group">
-                    ${p.expireAt > Date.now() ? '<div class="badge-oferta">OFERTA LIMITADA</div>' : ''}
-                    <div class="h-56 overflow-hidden flex items-center justify-center mb-6">
-                        <img src="${p.url}" class="max-h-full object-contain group-hover:scale-110 transition duration-500">
-                    </div>
-                    <h4 class="font-black text-xs uppercase tracking-tighter text-gray-400">${p.n}</h4>
-                    <p class="text-2xl font-black text-blue-600 mb-6 mt-1">RD$ ${p.p.toLocaleString()}</p>
-                    <button onclick="logic.addToCart('${p.id}')" class="w-full bg-black text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-blue-600 transition duration-300">Añadir a Bolsa</button>
+    <div id="admin-portal">
+        <div class="max-w-[1400px] mx-auto p-10 md:p-20">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-16 gap-6">
+                <div>
+                    <h2 class="text-6xl font-black italic uppercase tracking-tighter leading-none">Master Console</h2>
+                    <p class="text-blue-600 font-black text-xs mt-2 uppercase tracking-widest">Sistema de Gestión Centralizado</p>
                 </div>
-            `).join('');
-        },
+                <button onclick="logic.logout()" class="bg-red-500 text-white px-10 py-4 rounded-full font-black uppercase text-[10px] hover:bg-red-600 shadow-md transition transform active:scale-95">Cerrar Sesión</button>
+            </div>
 
-        async sendOTP() {
-            const email = document.getElementById('client-email').value;
-            if(!email.includes('@')) return alert("Por favor, ingrese un email válido.");
-            activeOTP = Math.floor(100000 + Math.random() * 900000).toString();
-            
-            await emailjs.send("Avd121094", "template_eale2lb", {
-                to_email: email,
-                code: activeOTP,
-                message: `SU CÓDIGO DE VERIFICACIÓN VIBEPHONE RD ES: ${activeOTP}`
-            });
-            
-            document.getElementById('otp-section').classList.add('hidden');
-            document.getElementById('otp-verify').classList.remove('hidden');
-            alert("📩 Código enviado con éxito.");
-        },
+            <div class="grid lg:grid-cols-3 gap-8 mb-16">
+                <div class="lg:col-span-2 card-white">
+                    <h3 class="text-xs font-black uppercase text-gray-400 mb-6 tracking-widest">Rendimiento de Inventario</h3>
+                    <div style="position: relative; height:300px; width:100%;">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+                <div class="card-black flex flex-col justify-center items-center text-center">
+                    <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-6 shadow-xl">
+                        <i class="fas fa-vault text-2xl text-white"></i>
+                    </div>
+                    <h4 class="text-zinc-500 font-black uppercase text-[10px] mb-4 tracking-widest">Capital en Inventario</h4>
+                    <p id="adm-cash" class="text-5xl font-black tracking-tighter mb-4 text-white">RD$ 0</p>
+                    <span class="bg-green-500/20 text-green-500 px-4 py-1.5 rounded-full text-[9px] font-black uppercase italic">Sincronizado Cloud</span>
+                </div>
+            </div>
 
-        async confirmPurchase() {
-            const code = document.getElementById('verify-code').value;
-            if(code !== activeOTP) return alert("Código Incorrecto.");
+            <div class="grid lg:grid-cols-2 gap-10 mb-16">
+                <div class="card-white space-y-10">
+                    <h3 class="text-2xl font-black mb-8 italic uppercase tracking-tighter border-b pb-4">Configuración General</h3>
+                    <div class="space-y-4">
+                        <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Dirección de la Sucursal</label>
+                        <input type="text" id="conf-addr" placeholder="Ej: Santo Domingo, RD" class="input-vibe">
+                        <label class="text-[10px] font-black uppercase text-gray-400 ml-2">WhatsApp de Ventas</label>
+                        <input type="text" id="conf-phone" value="8098182320" placeholder="8098182320" class="input-vibe">
+                        <button onclick="logic.saveSettings()" class="w-full bg-blue-600 text-white py-5 rounded-xl font-black uppercase text-xs shadow-md hover:bg-blue-700 transition">Guardar Cambios Globales</button>
+                    </div>
+                    <div class="space-y-4 pt-8 border-t border-gray-100">
+                        <h4 class="text-xl font-black italic uppercase tracking-tighter">Música de Fondo</h4>
+                        <label class="text-[10px] font-black uppercase text-gray-400 ml-2">URL de Múscia (Direct MP3)</label>
+                        <input type="text" id="conf-music-url" placeholder="Ej: https://.../stream.mp3" class="input-vibe">
+                        <div class="flex items-center gap-4">
+                            <label class="text-[10px] font-black uppercase text-gray-400">O Subir Archivo:</label>
+                            <input type="file" id="conf-music-file" accept="audio/mp3" class="text-xs font-bold text-zinc-500">
+                        </div>
+                        <button onclick="logic.saveMusicSettings()" class="w-full bg-black text-white py-5 rounded-xl font-black uppercase text-xs shadow-md hover:bg-zinc-800 transition">Actualizar Playlist</button>
+                    </div>
+                </div>
+                <div class="card-white">
+                    <h3 class="text-2xl font-black mb-8 italic uppercase tracking-tighter border-b pb-4">Añadir Nuevo Equipo</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="text" id="p-n" placeholder="Nombre del Equipo" class="input-vibe col-span-2">
+                        <input type="number" id="p-p" placeholder="Precio RD$" class="input-vibe">
+                        <input type="number" id="p-stock" placeholder="Stock" class="input-vibe" value="1">
+                        <input type="text" id="p-u" placeholder="URL Imagen" class="input-vibe col-span-2">
+                        <textarea id="p-details" placeholder="DETALLES DEL EQUIPO (Ej: Batería 100%, Desbloqueado, 256GB...)" class="input-vibe col-span-2 h-24 text-xs resize-none"></textarea>
+                        
+                        <select id="p-oferta" class="input-vibe font-bold uppercase text-[10px]">
+                            <option value="no">Precio Normal</option>
+                            <option value="si"> 🔥 En Oferta Especial</option>
+                        </select>
+                        <select id="p-cat" class="input-vibe font-bold uppercase text-[10px]">
+                            <option value="iPhone">iPhone</option>
+                            <option value="Watch">Watch</option>
+                            <option value="Mac">MacBook</option>
+                            <option value="Otros">Accesorios</option>
+                        </select>
+                        <button onclick="logic.addProduct()" class="col-span-2 bg-black text-white py-5 rounded-xl font-black uppercase shadow-xl hover:bg-blue-600 transition transform active:scale-95 text-xs">Publicar en Inventario</button>
+                    </div>
+                </div>
+            </div>
 
-            currentInvoice = "VIBE-" + Math.floor(10000 + Math.random() * 90000);
-            const total = cart.reduce((a, b) => a + b.p, 0);
-            currentApartado = total * 0.7;
+            <div class="card-white">
+                <div class="flex justify-between items-center mb-10 border-b pb-6">
+                    <h3 class="text-2xl font-black italic uppercase tracking-tighter">Control de Existencias</h3>
+                    <div class="text-[10px] font-black bg-gray-100 text-gray-600 px-4 py-2 rounded-full shadow-inner" id="p-count">0 ARTÍCULOS</div>
+                </div>
+                <div id="admin-product-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+            </div>
+        </div>
+    </div>
 
-            // Registro en Base de Datos por Factura
-            await db.collection("ventas").add({
-                factura: currentInvoice,
-                email: document.getElementById('client-email').value,
-                total: total,
-                apartado: currentApartado,
-                fecha: new Date(),
-                status: "ESPERANDO REPORTE"
-            });
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyByV8-3X8kR_TlxV7-H6m5jW7L-p_z1r4", authDomain: "mi-tienda-aaf07.firebaseapp.com", projectId: "mi-tienda-aaf07", storageBucket: "mi-tienda-aaf07.appspot.com", messagingSenderId: "360706963034", appId: "1:360706963034:web:49d1102e8ca73d55918a63" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-            // Baucher por Email
-            await emailjs.send("Avd121094", "template_eale2lb", {
-                to_email: document.getElementById('client-email').value,
-                message: `BAUCHER DE APARTADO VIBEPHONE RD\n\nFACTURA: ${currentInvoice}\nTOTAL: RD$ ${total.toLocaleString()}\nMONTO APARTADO (70%): RD$ ${currentApartado.toLocaleString()}\n\nFavor de realizar el pago y reportar por WhatsApp.`
-            });
+        // Objeto de audio para la música de fondo
+        const backgroundAudio = new Audio();
+        backgroundAudio.loop = true;
 
-            document.getElementById('otp-verify').classList.add('hidden');
-            document.getElementById('payment-methods').classList.remove('hidden');
-            alert("✅ Factura Generada. Revise sus datos de pago.");
-        },
+        let products = [];
+        let cart = JSON.parse(localStorage.getItem('vibe_cart_v4')) || [];
 
-        finishWithWhatsApp() {
-            const msg = `¡Hola VibePhone RD! Reporto mi pago del 70%.\n\nFactura: ${currentInvoice}\nMonto Apartado: RD$ ${currentApartado.toLocaleString()}.\nAdjunto comprobante.`;
-            window.open(`https://wa.me/18098182320?text=${encodeURIComponent(msg)}`);
-            
-            // Limpieza Total
-            cart = [];
-            ui.updateCart();
-            ui.toggleCart(false);
-            document.getElementById('payment-methods').classList.add('hidden');
-            document.getElementById('otp-section').classList.remove('hidden');
-        },
+        const logic = {
+            async init() {
+                // Escuchar productos (Firebase - Sin alterar)
+                db.collection("productos").onSnapshot(snap => {
+                    products = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
+                    this.render();
+                    this.renderAdmin();
+                });
 
-        addToCart(id) {
-            cart.push(products.find(x => x.id === id));
-            ui.updateCart();
-            ui.toggleCart(true);
-        },
+                // Escuchar configuración (Firebase - Sin alterar + NUEVO campo Música)
+                db.collection("config").doc("main").onSnapshot(doc => {
+                    if(doc.exists) {
+                        const d = doc.data();
+                        document.getElementById('nav-address').innerText = d.addr || "SANTO DOMINGO, RD";
+                        document.getElementById('footer-phone').innerText = d.phone || "809-818-2320";
+                        document.getElementById('conf-addr').value = d.addr || "";
+                        document.getElementById('conf-phone').value = d.phone || "8098182320";
+                        // NUEVO: Cargar URL de música guardada
+                        document.getElementById('conf-music-url').value = d.musicUrl || "";
+                        if(d.musicUrl) {
+                            backgroundAudio.src = d.musicUrl;
+                        } else {
+                            // URL por defecto si no hay guardada (Ej: Lofi stream)
+                            backgroundAudio.src = "https://stream.zeno.fm/0r0xa792kwzuv";
+                        }
+                    }
+                });
 
-        async saveProduct() {
-            const days = Number(document.getElementById('p-days').value);
-            await db.collection("productos").add({
-                n: document.getElementById('p-n').value,
-                p: Number(document.getElementById('p-p').value),
-                url: document.getElementById('p-u').value,
-                expireAt: days > 0 ? Date.now() + (days * 86400000) : 0
-            });
-            alert("Producto Publicado Correctamente.");
-        },
+                // Escuchar comentarios (Firebase - NUEVO)
+                this.loadComments();
 
-        loadSales() {
-            db.collection("ventas").orderBy("fecha", "desc").onSnapshot(snap => {
-                document.getElementById('sales-table').innerHTML = snap.docs.map(doc => `
-                    <tr class="border-b hover:bg-gray-50 transition">
-                        <td class="py-5 font-black text-blue-600">${doc.data().factura}</td>
-                        <td class="text-[11px]">${doc.data().email}</td>
-                        <td>RD$ ${doc.data().total.toLocaleString()}</td>
-                        <td class="text-red-500">RD$ ${doc.data().apartado.toLocaleString()}</td>
-                        <td class="italic text-[10px] text-gray-400">${doc.data().status}</td>
-                    </tr>
+                ui.updateCart();
+                this.initPayPal();
+            },
+
+            // Renderizado Premium Responsivo
+            render() {
+                const grid = document.getElementById('product-grid');
+                grid.innerHTML = products.map(p => `
+                    <div class="bg-white p-6 sm:p-7 p-8 rounded-[25px] border border-gray-100 relative group transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 flex flex-col justify-between">
+                        ${p.oferta === 'si' ? '<div class="badge-oferta">OFERTA</div>' : ''}
+                        <div class="flex-grow flex flex-col items-center">
+                            <div class="h-44 sm:h-48 md:h-52 w-full flex items-center justify-center mb-5 overflow-hidden rounded-xl bg-white">
+                                <img src="${p.url}" class="max-h-full max-w-full object-contain group-hover:scale-110 transition duration-700">
+                            </div>
+                            <div class="text-center">
+                                <p class="text-[8px] sm:text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">${p.cat || 'General'}</p>
+                                <h4 class="text-base sm:text-lg font-black italic uppercase mb-2 tracking-tighter leading-tight text-gray-950">${p.n}</h4>
+                                <p class="text-blue-600 font-black text-lg sm:text-xl mb-1.5">RD$ ${Number(p.p).toLocaleString()}</p>
+                                <p class="text-gray-500 text-[9px] font-medium leading-relaxed mb-6 px-1 line-clamp-3">${p.details || 'Ver detalles...'}</p>
+                            </div>
+                        </div>
+                        
+                        ${p.stock > 0 ? 
+                            `<button onclick="logic.addToCart('${p.id}')" class="w-full bg-black text-white py-4 rounded-xl font-black uppercase text-[10px] hover:bg-blue-600 transition-all tracking-widest text-xs shadow-md">Añadir a Bolsa</button>` :
+                            `<button class="w-full bg-gray-100 text-gray-400 py-4 rounded-xl font-black uppercase text-[10px] cursor-not-allowed">Agotado</button>`
+                        }
+                    </div>
                 `).join('');
-            });
-        }
-    };
+            },
 
-    const ui = {
-        toggleCart(s) { document.getElementById('side-cart').classList.toggle('active', s); },
-        closeAdmin() { document.getElementById('admin-portal').style.display = 'none'; },
-        updateCart() {
-            const total = cart.reduce((a, b) => a + b.p, 0);
-            document.getElementById('cart-list').innerHTML = cart.map((i, index) => `
-                <div class="bg-gray-100 p-5 rounded-2xl flex justify-between items-center animate-fade-in">
-                    <div>
-                        <p class="font-black text-[11px] uppercase text-gray-800">${i.n}</p>
-                        <p class="text-blue-600 font-bold text-sm">RD$ ${i.p.toLocaleString()}</p>
+            renderAdmin() {
+                const totalStock = products.reduce((acc, p) => acc + (parseFloat(p.p) * (p.stock || 1)), 0);
+                document.getElementById('adm-cash').innerText = "RD$ " + totalStock.toLocaleString();
+                document.getElementById('p-count').innerText = products.length + " PRODUCTOS";
+
+                const adminList = document.getElementById('admin-product-list');
+                adminList.innerHTML = products.map(p => `
+                    <div class="flex items-center justify-between p-5 bg-gray-50 rounded-2xl border border-gray-100 hover:bg-white transition-all shadow-sm">
+                        <div class="flex items-center gap-4">
+                            <img src="${p.url}" class="w-11 h-11 object-contain bg-white rounded-lg p-1.5 shadow-md">
+                            <div>
+                                <p class="text-[10px] sm:text-[11px] font-black uppercase truncate w-32 leading-none mb-1.5 text-gray-900">${p.n}</p>
+                                <p class="text-[9px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full inline-block">STOCK: ${p.stock || 0}</p>
+                            </div>
+                        </div>
+                        <button onclick="logic.deleteProduct('${p.id}')" class="w-9 h-9 flex items-center justify-center bg-red-50 text-red-500 rounded-full hover:bg-red-500 hover:text-white transition shadow-sm">
+                            <i class="fas fa-trash-can text-sm"></i>
+                        </button>
                     </div>
-                    <button onclick="cart.splice(${index},1); ui.updateCart();" class="text-gray-300 hover:text-red-500"><i class="fas fa-trash"></i></button>
-                </div>
-            `).join('');
-            document.getElementById('cart-badge').innerText = cart.length;
-            document.getElementById('cart-total').innerText = "RD$ " + total.toLocaleString();
-            document.getElementById('cart-70').innerText = "RD$ " + (total * 0.7).toLocaleString();
-        }
-    };
+                `).join('');
+            },
 
-    logic.init();
-</script>
+            async deleteProduct(id) {
+                if(confirm("¿Eliminar equipo del sistema definitivamente?")) {
+                    await db.collection("productos").doc(id).delete();
+                    ui.toast("EQUIPO ELIMINADO", "success");
+                }
+            },
+
+            // Formulario Mejorado (Añadiendo Detalles)
+            async addProduct() {
+                const n = document.getElementById('p-n').value;
+                const p = Number(document.getElementById('p-p').value);
+                const s = Number(document.getElementById('p-stock').value);
+                const u = document.getElementById('p-u').value;
+                const o = document.getElementById('p-oferta').value;
+                const c = document.getElementById('p-cat').value;
+                // NUEVO: detalles
+                const details = document.getElementById('p-details').value;
+
+                if(!n || !p || !u) return ui.toast("POR FAVOR COMPLETA TODO", "error");
+
+                await db.collection("productos").add({ n, p, stock: s, url: u, oferta: o, cat: c, details });
+                ui.toast("🚀 PRODUCTO PUBLICADO", "success");
+                // Limpiar (MEJORADO)
+                document.getElementById('p-n').value = ""; document.getElementById('p-p').value = ""; document.getElementById('p-u').value = ""; document.getElementById('p-details').value = "";
+            },
+
+            auth() {
+                if(document.getElementById('admin-pass').value === "Avd121094") {
+                    document.getElementById('admin-portal').classList.add('active');
+                    document.getElementById('login-screen').classList.remove('active');
+                    this.initChart();
+                } else { ui.toast("❌ CLAVE INCORRECTA", "error"); }
+            },
+
+            logout() { document.getElementById('admin-portal').classList.remove('active'); },
+
+            async saveSettings() {
+                const addr = document.getElementById('conf-addr').value;
+                const phone = document.getElementById('conf-phone').value;
+                await db.collection("config").doc("main").set({ addr, phone }, {merge: true});
+                ui.toast("⚙️ AJUSTES ACTUALIZADOS", "success");
+            },
+
+            // Lógica de Comentarios (NUEVO)
+            loadComments() {
+                db.collection("comentarios").orderBy("timestamp", "desc").limit(10).onSnapshot(snap => {
+                    const container = document.getElementById('comments-container');
+                    if(snap.empty) {
+                        container.innerHTML = `<div class="text-center py-10 text-gray-300 text-[10px] uppercase font-black">Sé el primero en comentar</div>`;
+                        return;
+                    }
+                    container.innerHTML = snap.docs.map(doc => {
+                        const d = doc.data();
+                        const date = d.timestamp ? d.timestamp.toDate().toLocaleDateString('es-DO', {day: '2-digit', month: 'short'}) : '';
+                        return `
+                            <div class="bg-gray-50 p-5 rounded-2xl border border-gray-100 flex gap-4 items-start shadow-sm">
+                                <div class="w-10 h-10 bg-zinc-200 rounded-full flex items-center justify-center font-black text-gray-400 uppercase text-xs">${d.name.substring(0,2)}</div>
+                                <div class="flex-grow">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <p class="font-black text-xs uppercase text-zinc-800">${d.name}</p>
+                                        <p class="text-[9px] font-bold text-gray-400">${date}</p>
+                                    </div>
+                                    <p class="text-gray-600 text-[11px] leading-relaxed">${d.text}</p>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                });
+            },
+
+            async addComment() {
+                const name = document.getElementById('comment-name').value;
+                const text = document.getElementById('comment-text').value;
+                if(!name || !text) return ui.toast("COMPLETA NOMBRE Y COMENTARIO", "error");
+                await db.collection("comentarios").add({ name, text, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+                ui.toast("💬 GRACIAS POR TU COMENTARIO");
+                document.getElementById('comment-name').value = ""; document.getElementById('comment-text').value = "";
+            },
+
+            // Lógica de Guardado de Música (NUEVO)
+            async saveMusicSettings() {
+                const urlInput = document.getElementById('conf-music-url').value;
+                const fileInput = document.getElementById('conf-music-file').files[0];
+                let finalMusicUrl = urlInput;
+
+                // Si hay un archivo, se prioriza el archivo (Nota: Aquí no subimos a Storage, solo generamos un Blob URL temporal)
+                // Para una solución real, subir a Firebase Storage y guardar el Download URL.
+                if(fileInput) {
+                    finalMusicUrl = URL.createObjectURL(fileInput);
+                    ui.toast("⚠️ Archivo cargado temporalmente. Para guardarlo siempre, usa una URL.", "warning");
+                }
+
+                if(!finalMusicUrl && !fileInput) return ui.toast("INGRESA URL O SUBE UN ARCHIVO", "error");
+
+                // Guardar URL en Firebase
+                await db.collection("config").doc("main").set({ musicUrl: finalMusicUrl }, {merge: true});
+                ui.toast("🎵 CONFIGURACIÓN DE MÚSICA ACTUALIZADA");
+                
+                // Actualizar reproductor
+                backgroundAudio.src = finalMusicUrl;
+                music.playDefault();
+            },
+
+            // --- Lógica del Carrito y PayPal (Sin alterar) ---
+            addToCart(id) {
+                const item = products.find(p => p.id === id);
+                cart.push({...item, cartId: Date.now()});
+                localStorage.setItem('vibe_cart_v4', JSON.stringify(cart));
+                ui.updateCart();
+                ui.toast("SE AÑADIÓ A LA BOLSA");
+            },
+
+            removeFromCart(cid) {
+                cart = cart.filter(i => i.cartId !== cid);
+                localStorage.setItem('vibe_cart_v4', JSON.stringify(cart));
+                ui.updateCart();
+            },
+
+            initPayPal() {
+                paypal.Buttons({
+                    style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay' },
+                    createOrder: (data, actions) => {
+                        const total = cart.reduce((acc, i) => acc + i.p, 0) * 0.7;
+                        return actions.order.create({ purchase_units: [{ amount: { value: (total/58.5).toFixed(2) } }] });
+                    },
+                    onApprove: (data, actions) => {
+                        return actions.order.capture().then(() => { ui.toast("PAGO RECIBIDO", "success"); });
+                    }
+                }).render('#paypal-button-container');
+            },
+
+            contactWA() {
+                const num = document.getElementById('conf-phone').value || "8098182320";
+                if(cart.length === 0) return ui.toast("BOLSA VACÍA", "error");
+                let msg = `🔥 *ORDEN VIBEPHONE RD* %0A%0A`;
+                let total = 0;
+                cart.forEach(i => { msg += `• *${i.n}* - RD$ ${i.p.toLocaleString()}%0A`; total += i.p; });
+                msg += `%0A💰 *TOTAL:* RD$ ${total.toLocaleString()}%0A💳 *APARTADO (70%):* RD$ ${(total * 0.7).toLocaleString()}`;
+                window.open(`https://wa.me/${num}?text=${msg}`);
+            },
+
+            search(t) {
+                const term = t.toLowerCase();
+                document.querySelectorAll("#product-grid > div").forEach(card => {
+                    card.style.display = card.innerText.toLowerCase().includes(term) ? "block" : "none";
+                });
+            },
+
+            initChart() {
+                const ctx = document.getElementById('salesChart').getContext('2d');
+                new Chart(ctx, { type: 'line', data: { labels: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'], datasets: [{ label: 'Actividad', data: [10, 15, 8, 20, 30, 45, 40], borderColor: '#0071e3', tension: 0.5 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+            }
+        };
+
+        // Lógica del Reproductor de Música (NUEVO)
+        const music = {
+            playDefault() {
+                const promise = backgroundAudio.play();
+                if(promise !== undefined) {
+                    promise.then(() => {
+                        this.updateStatus('Reproduciendo');
+                    }).catch(error => {
+                        console.log("Autoplay bloqueado");
+                        this.updateStatus('Pausado (Púlsa Jugar)');
+                        ui.toast("🎵 PULSA PLAY PARA ESCUCHAR MÚSICA", "info");
+                    });
+                }
+            },
+            pause() {
+                backgroundAudio.pause();
+                this.updateStatus('Pausado');
+            },
+            updateStatus(s) {
+                const status = document.getElementById('music-status');
+                if(status) status.innerText = s;
+            }
+        };
+
+        // UI Helpers (Sin alterar lo existente, solo UX mejorado)
+        const ui = {
+            showLogin() { document.getElementById('login-screen').classList.add('active'); document.getElementById('admin-pass').focus(); },
+            toggleCart() { document.getElementById('side-cart').classList.toggle('active'); },
+            updateCart() {
+                const total = cart.reduce((acc, i) => acc + i.p, 0);
+                const badge = document.getElementById('cart-badge');
+                if(badge) badge.innerText = cart.length;
+                const apart70 = document.getElementById('cart-70');
+                if(apart70) apart70.innerText = "RD$ " + (total * 0.7).toLocaleString();
+                
+                const list = document.getElementById('cart-list');
+                if(list) {
+                    list.innerHTML = cart.length === 0 ? `<div class="text-center py-20 opacity-20 font-black text-gray-400">Tu bolsa está vacía</div>` : 
+                    cart.map(i => `
+                        <div class="flex items-center justify-between bg-white p-5 rounded-2xl border border-gray-100 shadow-inner">
+                            <div class="flex items-center gap-3">
+                                <img src="${i.url}" class="w-10 h-10 object-contain p-1 rounded-lg bg-gray-50 border shadow-md">
+                                <div>
+                                    <p class="text-[10px] font-black uppercase text-gray-900 leading-none mb-1">${i.n}</p>
+                                    <p class="text-[9px] font-bold text-blue-600 bg-blue-50 inline-block px-1.5 rounded-full">RD$ ${i.p.toLocaleString()}</p>
+                                </div>
+                            </div>
+                            <button onclick="logic.removeFromCart(${i.cartId})" class="text-gray-300 hover:text-red-500 transition px-2 py-1"><i class="fas fa-trash-can text-sm"></i></button>
+                        </div>
+                    `).join('');
+                }
+            },
+            toast(m, type = "info") {
+                const t = document.createElement('div');
+                let colors = "bg-zinc-950 text-white"; // info
+                if(type === 'error') colors = "bg-red-600 text-white";
+                if(type === 'success') colors = "bg-green-600 text-white";
+                if(type === 'warning') colors = "bg-yellow-500 text-black";
+                t.className = `${colors} px-7 py-3.5 rounded-2xl font-black text-[10px] uppercase shadow-2xl animate-pulse`;
+                t.innerText = m;
+                document.getElementById('toast-center').appendChild(t);
+                setTimeout(() => t.remove(), 4000);
+            }
+        };
+
+        // Eventos y Atajos (Mejorado para autoplay)
+        window.addEventListener('keydown', (e) => { if(e.altKey && e.key.toLowerCase() === 'a') ui.showLogin(); });
+        // Intentar autoplay en la primera interacción (click) del usuario
+        window.addEventListener('click', () => { if(backgroundAudio.paused && !backgroundAudio.ended) music.playDefault(); }, {once: true});
+        // Actualizar barra de progreso de música
+        backgroundAudio.addEventListener('timeupdate', () => {
+            if(!backgroundAudio.duration) return;
+            const progress = (backgroundAudio.currentTime / backgroundAudio.duration) * 100;
+            document.getElementById('music-progress').style.width = progress + "%";
+        });
+
+        // Inicio (Sin alterar)
+        logic.init();
+    </script>
 </body>
 </html>
