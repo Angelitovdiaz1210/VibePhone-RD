@@ -1,455 +1,482 @@
+<!-- ================================================= -->
+<!-- VIBEPHONE RD | WEB PÚBLICA                        -->
+<!-- CONECTADA AL PANEL ADMIN                          -->
+<!-- ================================================= -->
+
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIBEPHONE RD | GLOBAL ENTERPRISE SYSTEM</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <style>
-        :root { --v-blue: #0071e3; --v-grey-bg: #f5f5f7; }
-        
-        /* Estilo General Premium y Responsivo */
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: linear-gradient(180deg, var(--v-grey-bg) 0%, #ffffff 100%); 
-            overflow-x: hidden; 
-            scroll-behavior: smooth; 
-            color: #1d1d1f;
-        }
-        
-        #login-screen { display: none; position: fixed; inset: 0; z-index: 99999; background: rgba(255,255,255,0.92); backdrop-filter: blur(20px); align-items: center; justify-content: center; opacity: 0; transition: 0.4s; }
-        #login-screen.active { display: flex; opacity: 1; }
-        
-        #admin-portal { display: none; position: fixed; inset: 0; background: #ffffff; z-index: 90000; overflow-y: auto; transform: translateY(100%); transition: 0.8s cubic-bezier(0.85, 0, 0.15, 1); }
-        #admin-portal.active { display: block; transform: translateY(0); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        .card-black { background: #000; color: #fff; border-radius: 30px; padding: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
-        .card-white { background: #fff; border-radius: 30px; padding: 40px; border: 1px solid #f2f2f2; box-shadow: 0 8px 25px rgba(0,0,0,0.03); }
-        
-        .input-vibe { background: #fbfbfb; border: 1px solid #e5e5e5; padding: 18px; border-radius: 16px; font-weight: 500; width: 100%; transition: 0.3s; }
-        .input-vibe:focus { border-color: var(--v-blue); background: #fff; outline: none; box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1); }
+<title>VibePhone RD</title>
 
-        #side-cart { position: fixed; top: 0; right: -100%; width: 100%; max-width: 420px; height: 100%; background: #fff; z-index: 50000; transition: 0.5s cubic-bezier(0.85, 0, 0.15, 1); box-shadow: -15px 0 40px rgba(0,0,0,0.06); }
-        #side-cart.active { right: 0; }
+<script src="https://cdn.tailwindcss.com"></script>
 
-        .badge-oferta { background: #ff3b30; color: #fff; padding: 6px 12px; border-radius: 100px; font-size: 10px; font-weight: 800; position: absolute; top: 20px; left: 20px; z-index: 10; animation: pulse 1.8s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.08); opacity: 0.9; } 100% { transform: scale(1); opacity: 1; } }
-        
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-thumb { background: #d1d1d6; border-radius: 10px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
-        /* Mejora Responsive de Imágenes */
-        #product-grid img {
-            max-width: 100%; 
-            height: auto; 
-            max-height: 200px; 
-            object-fit: contain;
-            margin-left: auto;
-            margin-right: auto;
-        }
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 
-        @media (max-width: 768px) {
-            #product-grid img { max-height: 160px; }
-            header h2 { font-size: 3rem !important; }
-            header { padding: 80px 20px 40px !important; }
-        }
-    </style>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<style>
+
+body{
+background:#050816;
+overflow-x:hidden;
+font-family:Arial;
+color:white;
+}
+
+.glass{
+background:rgba(255,255,255,.05);
+backdrop-filter:blur(15px);
+border:1px solid rgba(255,255,255,.08);
+}
+
+.product-card{
+transition:.5s;
+}
+
+.product-card:hover{
+transform:translateY(-10px);
+box-shadow:0 0 30px rgba(0,191,255,.3);
+}
+
+.drop{
+position:fixed;
+top:-100px;
+width:2px;
+height:80px;
+background:linear-gradient(transparent,rgba(255,255,255,.4));
+animation:rain linear infinite;
+z-index:-1;
+}
+
+@keyframes rain{
+to{
+transform:translateY(120vh);
+}
+}
+
+.swiper{
+border-radius:40px;
+overflow:hidden;
+}
+
+</style>
+
 </head>
+
 <body>
 
-    <div id="toast-center" class="fixed top-10 right-10 z-[100000] space-y-4"></div>
+<!-- LLUVIA -->
 
-    <div id="login-screen">
-        <div class="bg-white p-10 rounded-[30px] shadow-3xl text-center w-[380px] border border-gray-100">
-            <div class="w-16 h-16 bg-black text-white rounded-2xl flex items-center justify-center font-black text-3xl mx-auto mb-6 shadow-md">V</div>
-            <h2 class="text-xl font-black mb-8 uppercase italic tracking-tighter">Acceso Master</h2>
-            <input type="password" id="admin-pass" placeholder="PASSWORD" class="input-vibe text-center text-xl mb-6">
-            <button onclick="logic.auth()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-5 rounded-xl font-black uppercase transition-all transform active:scale-95">Entrar al Sistema</button>
-            <button onclick="document.getElementById('login-screen').classList.remove('active')" class="mt-6 text-gray-400 text-[10px] font-bold uppercase tracking-widest">Cancelar</button>
-        </div>
-    </div>
+<div id="rain"></div>
 
-    <nav class="sticky top-0 z-[40000] bg-white/90 backdrop-blur-xl border-b border-gray-100">
-        <div class="max-w-[1600px] mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3 cursor-pointer group" ondblclick="ui.showLogin()">
-                <div class="w-11 h-11 bg-black group-hover:bg-blue-600 transition-colors rounded-xl flex items-center justify-center text-white font-black text-xl shadow-inner">V</div>
-                <div>
-                    <h1 class="text-lg font-black tracking-tighter uppercase leading-none">VibePhone RD</h1>
-                    <p id="nav-address" class="text-[8px] font-bold text-blue-600 uppercase tracking-widest mt-1 italic">Cargando...</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-5">
-                <div class="relative hidden sm:block">
-                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-                    <input onkeyup="logic.search(this.value)" placeholder="BUSCAR EQUIPO..." class="bg-gray-100/70 pl-10 pr-6 py-2.5 rounded-full text-[10px] font-bold outline-none focus:ring-2 ring-blue-400 w-56 transition-all">
-                </div>
-                <button onclick="ui.toggleCart()" class="relative p-2 text-gray-700 hover:text-blue-600 transition">
-                    <i class="fas fa-shopping-bag text-2xl"></i>
-                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center border border-white font-black shadow-md">0</span>
-                </button>
-            </div>
-        </div>
-    </nav>
+<!-- NAVBAR -->
 
-    <header class="max-w-[1200px] mx-auto px-6 py-20 text-center">
-        <div class="inline-block bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full text-[9px] font-black uppercase mb-6 tracking-widest shadow-inner border border-blue-100">Premium Dominicana</div>
-        <h2 class="text-6xl md:text-8xl font-black tracking-tighter italic leading-[0.85] mb-8 uppercase text-gray-950">Ingeniería <br><span class="text-blue-600">Dominicana.</span></h2>
-        <div class="inline-flex items-center gap-5 bg-white border border-gray-100 px-7 py-4 rounded-full shadow-lg font-bold uppercase text-[10px] text-gray-600">
-            <span class="text-red-500 flex items-center gap-2 font-black"><i class="fas fa-star-of-life text-xs"></i> Apartado</span>
-            <div class="h-4 w-[1px] bg-gray-200"></div>
-            <span>70% Inicial / 30% Contra Entrega</span>
-        </div>
-    </header>
+<header class="glass sticky top-0 z-50 p-5">
 
-    <main id="product-grid" class="max-w-[1500px] mx-auto px-6 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 mb-24"></main>
+<div class="flex flex-wrap justify-between items-center">
 
-    <section class="max-w-[1000px] mx-auto px-6 mb-24">
-        <div class="card-white p-8">
-            <h3 class="text-3xl font-black italic tracking-tighter uppercase mb-2">Comentarios</h3>
-            <div id="comments-container" class="space-y-6 mb-10 max-h-[400px] overflow-y-auto pr-3">
-                <div class="text-center py-10 text-gray-300 text-xs uppercase font-black">Cargando comentarios...</div>
-            </div>
-            <div class="flex gap-4">
-                <input type="text" id="comment-name" placeholder="TU NOMBRE" class="input-vibe w-1/3">
-                <input type="text" id="comment-text" placeholder="ESCRIBE TU COMENTARIO..." class="input-vibe w-2/3">
-                <button onclick="logic.addComment()" class="bg-blue-600 text-white px-8 py-4 rounded-xl font-black uppercase text-xs hover:bg-blue-700 transition transform active:scale-95 shadow-md">Publicar</button>
-            </div>
-        </div>
-    </section>
+<h1 class="text-4xl font-black">
+VibePhone RD
+</h1>
 
-    <footer class="bg-zinc-950 text-white pt-20 pb-10 px-6 rounded-[40px] mt-24 mb-6 mx-6 shadow-2xl">
-        <div class="max-w-[1400px] mx-auto grid md:grid-cols-4 gap-12 border-b border-zinc-800 pb-12 mb-10">
-            <div class="col-span-1 md:col-span-2">
-                <h4 class="text-3xl font-black italic mb-5 tracking-tighter uppercase">VibePhone RD</h4>
-                <p class="text-zinc-500 font-medium text-sm leading-relaxed italic max-w-md">Importadores directos de tecnología Apple y Premium. Garantía real en cada equipo vendido en República Dominicana. Sistema Global Enterprise v4.2.</p>
-                <div class="flex gap-4 mt-8">
-                    <a href="https://wa.me/8098182320" class="w-10 h-10 bg-zinc-900 rounded-full flex items-center justify-center hover:bg-green-600 transition-colors shadow-lg"><i class="fab fa-whatsapp"></i></a>
-                    <a href="#" class="w-10 h-10 bg-zinc-900 rounded-full flex items-center justify-center hover:bg-pink-600 transition-colors shadow-lg"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-            <div class="md:text-left">
-                <h5 class="text-zinc-600 font-black uppercase text-[10px] mb-6 tracking-widest">Contacto Directo</h5>
-                <p id="footer-phone" class="text-3xl font-black text-blue-500 mb-2 tracking-tighter">809-818-2320</p>
-                <p class="text-zinc-600 font-bold text-[10px] uppercase italic">Lunes a Sábado | 9:00 AM - 7:00 PM</p>
-            </div>
-            <div class="md:text-left bg-zinc-900 p-6 rounded-2xl border border-zinc-800 shadow-xl">
-                <h5 class="text-zinc-600 font-black uppercase text-[10px] mb-4 tracking-widest">Vibe Radio <span class="text-blue-500">Live</span></h5>
-                <div id="music-player-ui" class="space-y-4">
-                    <div class="flex items-center gap-3">
-                        <img src="https://images.unsplash.com/photo-1593696140826-c58b021acf8b?q=80&w=200" class="w-12 h-12 rounded-lg object-cover shadow-md">
-                        <div>
-                            <p class="text-xs font-black uppercase text-white truncate">Ambiente Premium</p>
-                            <p id="music-status" class="text-[9px] font-medium text-zinc-600 uppercase">Detenido</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="music.playDefault()" class="w-1/2 bg-blue-600 text-white text-[9px] py-3 rounded-lg font-black uppercase hover:bg-blue-700 transition">Reproducir</button>
-                        <button onclick="music.pause()" class="w-1/2 bg-zinc-800 text-zinc-400 text-[9px] py-3 rounded-lg font-black uppercase hover:bg-zinc-700 transition">Pausar</button>
-                    </div>
-                    <div class="w-full h-1 bg-zinc-700 rounded-full overflow-hidden">
-                        <div id="music-progress" class="h-full bg-blue-500 w-0 transition-all duration-300"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="max-w-[1400px] mx-auto text-center">
-            <p class="text-zinc-700 font-bold text-[10px] uppercase">© 2026 VibePhone RD - Todos los derechos reservados.</p>
-        </div>
-    </footer>
+<div class="flex gap-4">
 
-    <div id="side-cart" class="flex flex-col p-8">
-        <div class="flex justify-between items-center mb-8 border-b pb-8">
-            <h3 class="text-2xl font-black italic tracking-tighter uppercase">Tu Bolsa</h3>
-            <button onclick="ui.toggleCart()" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 hover:text-red-500 transition"><i class="fas fa-times"></i></button>
-        </div>
-        <div id="cart-list" class="flex-grow overflow-y-auto space-y-4 pr-2"></div>
-        <div class="mt-8 pt-8 border-t space-y-6">
-            <div class="flex justify-between items-center font-black">
-                <span class="text-[10px] text-gray-500 uppercase">Monto de Apartado (70%)</span>
-                <span id="cart-70" class="text-2xl text-blue-600 tracking-tighter">RD$ 0</span>
-            </div>
-            <button onclick="logic.contactWA()" class="w-full bg-black hover:bg-blue-600 text-white py-5 rounded-2xl font-black uppercase italic text-[11px] tracking-widest transition-all shadow-lg">Finalizar por WhatsApp</button>
-        </div>
-    </div>
+<button onclick="toggleMusic()"
+class="bg-white/10 px-5 py-3 rounded-2xl">
 
-    <div id="admin-portal">
-        <div class="max-w-[1400px] mx-auto p-10 md:p-20">
-            <div class="flex flex-col md:flex-row justify-between items-center mb-16 gap-6">
-                <div>
-                    <h2 class="text-6xl font-black italic uppercase tracking-tighter leading-none">Master Console</h2>
-                    <p class="text-blue-600 font-black text-xs mt-2 uppercase tracking-widest">Sistema de Gestión Centralizado</p>
-                </div>
-                <button onclick="logic.logout()" class="bg-red-500 text-white px-10 py-4 rounded-full font-black uppercase text-[10px] hover:bg-red-600 shadow-md transition transform active:scale-95">Cerrar Sesión</button>
-            </div>
+<i class="fa-solid fa-music"></i>
 
-            <div class="grid lg:grid-cols-3 gap-8 mb-16">
-                <div class="lg:col-span-2 card-white">
-                    <h3 class="text-xs font-black uppercase text-gray-400 mb-6 tracking-widest">Rendimiento de Inventario</h3>
-                    <div style="position: relative; height:300px; width:100%;">
-                        <canvas id="salesChart"></canvas>
-                    </div>
-                </div>
-                <div class="card-black flex flex-col justify-center items-center text-center">
-                    <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-6 shadow-xl">
-                        <i class="fas fa-vault text-2xl text-white"></i>
-                    </div>
-                    <h4 class="text-zinc-500 font-black uppercase text-[10px] mb-4 tracking-widest">Capital en Inventario</h4>
-                    <p id="adm-cash" class="text-5xl font-black tracking-tighter mb-4 text-white">RD$ 0</p>
-                    <span class="bg-green-500/20 text-green-500 px-4 py-1.5 rounded-full text-[9px] font-black uppercase italic">Sincronizado Cloud</span>
-                </div>
-            </div>
+</button>
 
-            <div class="grid lg:grid-cols-2 gap-10 mb-16">
-                <div class="card-white space-y-10">
-                    <h3 class="text-2xl font-black mb-8 italic uppercase tracking-tighter border-b pb-4">Configuración General</h3>
-                    <div class="space-y-4">
-                        <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Dirección de la Sucursal</label>
-                        <input type="text" id="conf-addr" placeholder="Ej: Santo Domingo, RD" class="input-vibe">
-                        <label class="text-[10px] font-black uppercase text-gray-400 ml-2">WhatsApp de Ventas</label>
-                        <input type="text" id="conf-phone" value="8098182320" class="input-vibe">
-                        <button onclick="logic.saveSettings()" class="w-full bg-blue-600 text-white py-5 rounded-xl font-black uppercase text-xs shadow-md hover:bg-blue-700 transition">Guardar Cambios Globales</button>
-                    </div>
-                    <div class="space-y-4 pt-8 border-t border-gray-100">
-                        <h4 class="text-xl font-black italic uppercase tracking-tighter">Música de Fondo</h4>
-                        <input type="text" id="conf-music-url" placeholder="URL MP3..." class="input-vibe">
-                        <div class="flex items-center gap-4">
-                            <input type="file" id="conf-music-file" accept="audio/mp3" class="text-xs font-bold text-zinc-500">
-                        </div>
-                        <button onclick="logic.saveMusicSettings()" class="w-full bg-black text-white py-5 rounded-xl font-black uppercase text-xs shadow-md hover:bg-zinc-800 transition">Actualizar Playlist</button>
-                    </div>
-                </div>
-                <div class="card-white">
-                    <h3 class="text-2xl font-black mb-8 italic uppercase tracking-tighter border-b pb-4">Añadir Nuevo Equipo</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <input type="text" id="p-n" placeholder="Nombre" class="input-vibe col-span-2">
-                        <input type="number" id="p-p" placeholder="Precio RD$" class="input-vibe">
-                        <input type="number" id="p-stock" value="1" class="input-vibe">
-                        <input type="text" id="p-u" placeholder="URL Imagen" class="input-vibe col-span-2">
-                        <textarea id="p-details" placeholder="Detalles..." class="input-vibe col-span-2 h-24 text-xs resize-none"></textarea>
-                        <button onclick="logic.addProduct()" class="col-span-2 bg-black text-white py-5 rounded-xl font-black uppercase shadow-xl hover:bg-blue-600 transition text-xs">Publicar</button>
-                    </div>
-                </div>
-            </div>
+<a href="admin.html"
+class="bg-cyan-500 px-6 py-3 rounded-2xl font-black">
 
-            <div class="card-white">
-                <div class="flex justify-between items-center mb-10 border-b pb-6">
-                    <h3 class="text-2xl font-black italic uppercase tracking-tighter">Existencias</h3>
-                    <div class="text-[10px] font-black bg-gray-100 px-4 py-2 rounded-full" id="p-count">0 ARTÍCULOS</div>
-                </div>
-                <div id="admin-product-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
-            </div>
-        </div>
-    </div>
+<i class="fa-solid fa-lock mr-2"></i>
+Admin
 
-    <script>
-        // CONFIGURACIÓN (RESTAURADA)
-        const firebaseConfig = { apiKey: "AIzaSyByV8-3X8kR_TlxV7-H6m5jW7L-p_z1r4", authDomain: "mi-tienda-aaf07.firebaseapp.com", projectId: "mi-tienda-aaf07", storageBucket: "mi-tienda-aaf07.appspot.com", messagingSenderId: "360706963034", appId: "1:360706963034:web:49d1102e8ca73d55918a63" };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+</a>
 
-        const backgroundAudio = new Audio();
-        backgroundAudio.loop = true;
+</div>
 
-        let products = [];
-        let cart = JSON.parse(localStorage.getItem('vibe_cart_v4')) || [];
+</div>
 
-        // --- FUNCIONES DE MÚSICA (CORREGIDAS) ---
-        const music = {
-            playDefault() {
-                const url = document.getElementById('conf-music-url').value || "https://stream.zeno.fm/0r0xa792kwzuv";
-                backgroundAudio.src = url;
-                backgroundAudio.play();
-                document.getElementById('music-status').innerText = "Sonando...";
-                this.updateProgress();
-            },
-            pause() {
-                backgroundAudio.pause();
-                document.getElementById('music-status').innerText = "Detenido";
-            },
-            updateProgress() {
-                backgroundAudio.ontimeupdate = () => {
-                    const prog = (backgroundAudio.currentTime / (backgroundAudio.duration || 300)) * 100;
-                    document.getElementById('music-progress').style.width = prog + "%";
-                };
-            }
-        };
+</header>
 
-        const logic = {
-            async init() {
-                db.collection("productos").onSnapshot(snap => {
-                    products = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
-                    this.render();
-                    this.renderAdmin();
-                });
-                
-                db.collection("config").doc("main").onSnapshot(doc => {
-                    if(doc.exists) {
-                        const d = doc.data();
-                        document.getElementById('nav-address').innerText = d.addr || "SANTO DOMINGO, RD";
-                        document.getElementById('footer-phone').innerText = d.phone || "809-818-2320";
-                        document.getElementById('conf-addr').value = d.addr || "";
-                        document.getElementById('conf-phone').value = d.phone || "";
-                        document.getElementById('conf-music-url').value = d.musicUrl || "";
-                    }
-                });
+<!-- HERO -->
 
-                this.loadComments();
-                ui.updateCart();
-                this.initChart();
-            },
+<section class="p-8">
 
-            render() {
-                const grid = document.getElementById('product-grid');
-                grid.innerHTML = products.map(p => `
-                    <div class="bg-white p-6 rounded-[25px] border border-gray-100 flex flex-col justify-between group">
-                        <div class="flex flex-col items-center">
-                            <div class="h-44 w-full flex items-center justify-center mb-5">
-                                <img src="${p.url}" class="max-h-full object-contain group-hover:scale-105 transition">
-                            </div>
-                            <h4 class="font-black uppercase text-sm mb-2 text-center">${p.n}</h4>
-                            <p class="text-blue-600 font-black text-xl mb-4">RD$ ${Number(p.p).toLocaleString()}</p>
-                        </div>
-                        <button onclick="logic.addToCart('${p.id}')" class="w-full bg-black text-white py-4 rounded-xl font-black uppercase text-[10px]">Añadir</button>
-                    </div>
-                `).join('');
-            },
+<div class="swiper mySwiper">
 
-            renderAdmin() {
-                const total = products.reduce((acc, p) => acc + (Number(p.p) * (p.stock || 1)), 0);
-                document.getElementById('adm-cash').innerText = "RD$ " + total.toLocaleString();
-                const list = document.getElementById('admin-product-list');
-                list.innerHTML = products.map(p => `
-                    <div class="p-4 bg-gray-50 rounded-xl flex justify-between items-center">
-                        <span class="text-[10px] font-black uppercase truncate w-32">${p.n}</span>
-                        <button onclick="logic.deleteProduct('${p.id}')" class="text-red-500"><i class="fas fa-trash"></i></button>
-                    </div>
-                `).join('');
-            },
+<div class="swiper-wrapper"
+id="carouselContainer">
 
-            async addProduct() {
-                const n = document.getElementById('p-n').value;
-                const p = Number(document.getElementById('p-p').value);
-                const u = document.getElementById('p-u').value;
-                const details = document.getElementById('p-details').value;
-                await db.collection("productos").add({ n, p, url: u, details, stock: 1 });
-                ui.toast("PRODUCTO AGREGADO");
-            },
+</div>
 
-            async saveSettings() {
-                const addr = document.getElementById('conf-addr').value;
-                const phone = document.getElementById('conf-phone').value;
-                await db.collection("config").doc("main").set({ addr, phone }, {merge: true});
-                ui.toast("AJUSTES GUARDADOS");
-            },
+</div>
 
-            async saveMusicSettings() {
-                const musicUrl = document.getElementById('conf-music-url').value;
-                await db.collection("config").doc("main").set({ musicUrl }, {merge: true});
-                ui.toast("PLAYLIST ACTUALIZADA");
-            },
+</section>
 
-            initChart() {
-                const ctx = document.getElementById('salesChart');
-                if(!ctx) return;
-                new Chart(ctx, { type: 'line', data: { labels: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie'], datasets: [{ label: 'Ventas', data: [12, 19, 3, 5, 2], borderColor: '#0071e3', tension: 0.4 }] } });
-            },
+<!-- BUSCADOR -->
 
-            auth() {
-                if(document.getElementById('admin-pass').value === "Avd121094") {
-                    document.getElementById('admin-portal').classList.add('active');
-                } else { ui.toast("CLAVE INCORRECTA"); }
-            },
-            logout() { document.getElementById('admin-portal').classList.remove('active'); },
-            addToCart(id) {
-                const p = products.find(x => x.id === id);
-                cart.push(p); ui.updateCart(); ui.toast("AGREGADO");
-            }
-        };
+<section class="p-8">
 
-        const ui = {
-            toggleCart() { document.getElementById('side-cart').classList.toggle('active'); },
-            showLogin() { document.getElementById('login-screen').classList.add('active'); },
-            updateCart() {
-                localStorage.setItem('vibe_cart_v4', JSON.stringify(cart));
-                document.getElementById('cart-badge').innerText = cart.length;
-                const total = cart.reduce((acc, i) => acc + Number(i.p), 0);
-                document.getElementById('cart-70').innerText = "RD$ " + (total * 0.7).toLocaleString();
-            },
-            toast(m) {
-                const t = document.createElement('div');
-                t.className = "bg-black text-white p-4 rounded-xl text-xs font-black uppercase";
-                t.innerText = m; document.getElementById('toast-center').appendChild(t);
-                setTimeout(() => t.remove(), 2000);
-            }
-        };
+<div class="flex flex-wrap gap-5 justify-between items-center mb-10">
 
-        logic.init();
-// =====================================================================
-// UNIFICACIÓN DE ACCESOS AL ADMINISTRADOR (PC Y MÓVIL)
-// =====================================================================
+<div>
 
-(function() {
-    // 1. CONFIGURACIÓN DE IDENTIFICADORES
-    // Cambia 'logo-vibephones' por el ID de tu imagen y 'admin-panel' por el de tu contenedor de administrador
-    const idLogo = 'logo-vibephones'; 
-    const idPanelAdmin = 'admin-panel'; 
+<h2 class="text-5xl font-black">
+Todos los teléfonos
+</h2>
 
-    let temporizadorPresion;
+<p class="text-gray-400 mt-2">
+iPhone, Samsung, Xiaomi, Gaming y más
+</p>
 
-    // --- FUNCIÓN PARA MOSTRAR EL PANEL ---
-    // Esta función garantiza que tu administrador se vea completo
-    function mostrarAdministradorCompleto() {
-        const adminElemento = document.getElementById(idPanelAdmin);
-        
-        if (adminElemento) {
-            // Se asegura de que el panel sea visible y esté sobre otros elementos
-            adminElemento.style.display = 'block';
-            adminElemento.style.visibility = 'visible';
-            adminElemento.style.opacity = '1';
-            adminElemento.scrollIntoView({ behavior: 'smooth' });
-            
-            console.log("Acceso de administrador activado correctamente.");
-        } else {
-            // Si el panel no existe aún en el DOM, puedes redirigir o alertar
-            alert("Accediendo al panel de control de Vibephones RD...");
-        }
-    }
+</div>
 
-    // --- ACCESO PC (Alt + A) ---
-    document.addEventListener('keydown', function(e) {
-        if (e.altKey && (e.key === 'a' || e.key === 'A')) {
-            e.preventDefault();
-            mostrarAdministradorCompleto();
-        }
-    });
+<input
+type="text"
+id="searchInput"
+placeholder="Buscar equipo..."
+class="bg-white/5
+border border-white/10
+p-5 rounded-2xl
+w-full md:w-96">
 
-    // --- ACCESO TELÉFONO (Presión 3 segundos en Logo) ---
-    const logoElemento = document.getElementById(idLogo);
+</div>
 
-    if (logoElemento) {
-        // Evita el menú contextual del navegador (clic derecho/presión larga)
-        logoElemento.addEventListener('contextmenu', e => e.preventDefault());
+</section>
 
-        // Inicia el conteo al tocar
-        logoElemento.addEventListener('touchstart', function() {
-            temporizadorPresion = setTimeout(mostrarAdministradorCompleto, 3000);
-        }, { passive: true });
+<!-- PRODUCTOS -->
 
-        // Cancela si el usuario levanta el dedo o mueve la pantalla
-        logoElemento.addEventListener('touchend', () => clearTimeout(temporizadorPresion));
-        logoElemento.addEventListener('touchmove', () => clearTimeout(temporizadorPresion));
-        logoElemento.addEventListener('touchcancel', () => clearTimeout(temporizadorPresion));
-    }
-})();
-    </script>
+<section class="p-8">
+
+<div id="productGrid"
+class="grid
+grid-cols-1
+sm:grid-cols-2
+xl:grid-cols-4
+gap-8">
+
+</div>
+
+</section>
+
+<!-- POLÍTICAS -->
+
+<section class="p-8">
+
+<div class="glass rounded-[2rem] p-10">
+
+<h2 class="text-4xl font-black mb-6">
+Políticas de Empresa
+</h2>
+
+<div id="companyPolicies"
+class="space-y-4 text-gray-300">
+
+</div>
+
+</div>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer class="mt-20 glass p-10">
+
+<div class="grid md:grid-cols-4 gap-10">
+
+<div>
+
+<h3 class="text-3xl font-black">
+VibePhone RD
+</h3>
+
+<p class="text-gray-400 mt-4">
+Tecnología premium.
+</p>
+
+</div>
+
+<div>
+
+<h4 class="font-black mb-4">
+Categorías
+</h4>
+
+<ul class="space-y-2 text-gray-400">
+
+<li>iPhone</li>
+<li>Samsung</li>
+<li>Xiaomi</li>
+<li>Gaming</li>
+
+</ul>
+
+</div>
+
+<div>
+
+<h4 class="font-black mb-4">
+Contacto
+</h4>
+
+<ul class="space-y-2 text-gray-400">
+
+<li>República Dominicana</li>
+<li>809-818-2320</li>
+
+</ul>
+
+</div>
+
+<div>
+
+<h4 class="font-black mb-4">
+Redes
+</h4>
+
+<div class="flex gap-5 text-2xl">
+
+<i class="fa-brands fa-instagram"></i>
+<i class="fa-brands fa-facebook"></i>
+<i class="fa-brands fa-whatsapp"></i>
+
+</div>
+
+</div>
+
+</div>
+
+</footer>
+
+<!-- AUDIO -->
+
+<audio id="bgMusic" loop></audio>
+
+<!-- SCRIPT -->
+
+<script>
+
+/* LLUVIA */
+
+for(let i=0;i<120;i++){
+
+const d=document.createElement('div');
+
+d.classList.add('drop');
+
+d.style.left=Math.random()*100+'vw';
+
+d.style.animationDuration=
+(Math.random()*1+.5)+'s';
+
+document.getElementById('rain')
+.appendChild(d);
+
+}
+
+/* PRODUCTOS */
+
+let inventory=
+JSON.parse(localStorage.getItem('vibe_inventory'))||[];
+
+function renderProducts(){
+
+const grid=
+document.getElementById('productGrid');
+
+grid.innerHTML='';
+
+inventory.forEach(product=>{
+
+grid.innerHTML+=`
+
+<div class="product-card glass rounded-[2rem] overflow-hidden">
+
+<img
+src="${product.image}"
+class="w-full h-72 object-cover">
+
+<div class="p-6">
+
+<h3 class="text-2xl font-black">
+${product.name}
+</h3>
+
+<p class="text-gray-400 mt-2">
+${product.capacity}
+</p>
+
+<div class="flex justify-between items-center mt-6">
+
+<h4 class="text-3xl font-black text-cyan-400">
+RD$${Number(product.price).toLocaleString()}
+</h4>
+
+<a
+href="https://wa.me/18098182320?text=Hola me interesa el ${product.name}"
+target="_blank"
+class="bg-green-500 px-5 py-3 rounded-2xl">
+
+<i class="fa-brands fa-whatsapp"></i>
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+renderProducts();
+
+/* BUSCADOR */
+
+document.getElementById('searchInput')
+.addEventListener('keyup',e=>{
+
+const text=e.target.value.toLowerCase();
+
+document.querySelectorAll('.product-card')
+.forEach(card=>{
+
+card.style.display=
+card.innerText.toLowerCase()
+.includes(text)
+?'block':'none';
+
+});
+
+});
+
+/* CARRUSEL */
+
+let slides=
+JSON.parse(localStorage.getItem('vibe_slides'))||[];
+
+function renderSlides(){
+
+const container=
+document.getElementById('carouselContainer');
+
+container.innerHTML='';
+
+slides.forEach(slide=>{
+
+container.innerHTML+=`
+
+<div class="swiper-slide">
+
+<div class="relative h-[500px]">
+
+<img
+src="${slide.img}"
+class="w-full h-full object-cover">
+
+<div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+
+<h2 class="text-6xl font-black">
+${slide.title}
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+new Swiper(".mySwiper",{
+
+loop:true,
+
+autoplay:{
+delay:3000
+}
+
+});
+
+}
+
+renderSlides();
+
+/* POLÍTICAS */
+
+let policies=
+JSON.parse(localStorage.getItem('vibe_policies'))||[];
+
+function renderPolicies(){
+
+const div=
+document.getElementById('companyPolicies');
+
+div.innerHTML='';
+
+policies.forEach(p=>{
+
+div.innerHTML+=`
+<p>• ${p}</p>
+`;
+
+});
+
+}
+
+renderPolicies();
+
+/* MÚSICA */
+
+const audio=
+document.getElementById('bgMusic');
+
+let music=
+localStorage.getItem('vibe_music');
+
+if(music){
+
+audio.src=music;
+
+audio.volume=.5;
+
+audio.play();
+
+}
+
+function toggleMusic(){
+
+if(audio.paused){
+
+audio.play();
+
+}else{
+
+audio.pause();
+
+}
+
+}
+
+</script>
+
 </body>
 </html>
