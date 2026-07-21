@@ -1,646 +1,928 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vibephones RD | Tienda Oficial & Sistema Corporativo</title>
-    <!-- TAILWIND -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- ICONOS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-    <!-- SWIPER -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#00BFFF',
-                        secondary: '#2563eb',
-                        darkbg: '#050816',
-                        card: '#101827'
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            scroll-behavior: smooth;
-        }
-        body {
-            background: radial-gradient(circle at top right, #111827, #050816 60%);
-            min-h-screen;
-            overflow-x: hidden;
-            font-family: Arial, sans-serif;
-        }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-thumb { background: #00BFFF; border-radius: 10px; }
-        .glass {
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-        }
-        .btn-premium {
-            background: linear-gradient(135deg, #00BFFF, #2563eb);
-            transition: .4s;
-        }
-        .btn-premium:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 0 25px rgba(0, 191, 255, .5);
-        }
-        .product-card {
-            transition: .5s;
-        }
-        .product-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 0 30px rgba(0, 191, 255, .25);
-        }
-        .float { animation: float 5s ease-in-out infinite; }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-        }
-        .particle {
-            position: fixed;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, .15);
-            z-index: -1;
-            animation: moveParticle linear infinite;
-        }
-        @keyframes moveParticle {
-            from { transform: translateY(100vh); }
-            to { transform: translateY(-100vh); }
-        }
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: -500px;
-            z-index: 9999;
-            transition: .5s;
-        }
-        .toast.show { right: 20px; }
-        .input-premium {
-            background: rgba(255, 255, 255, .05);
-            border: 1px solid rgba(255, 255, 255, .08);
-            color: white;
-            transition: .3s;
-        }
-        .input-premium:focus {
-            border-color: #00BFFF;
-            background: rgba(255, 255, 255, .1);
-        }
-        
-        /* AJUSTES CARRUSEL PEQUEÑO Y PREMIUM */
-        .swiper-container-wrapper {
-            max-width: 480px;
-            margin: 0 auto;
-        }
-        .swiper {
-            width: 100%;
-            height: 280px;
-            padding-bottom: 35px;
-        }
-        .swiper-slide {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .swiper-slide img {
-            max-height: 220px;
-            object-fit: contain;
-            border-radius: 20px;
-        }
-        .swiper-pagination-bullet-active { background: #00BFFF !important; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VibePhone RD | System Complete Pro</title>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Firebase SDKs (Compat v9) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --bg-main: #0f172a;
+      --bg-card: #1e293b;
+      --bg-input: #090d16;
+      --border-color: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --radius: 10px;
+      --transition: all 0.25s ease-in-out;
+    }
+
+    [data-theme="light"] {
+      --bg-main: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-input: #f8fafc;
+      --border-color: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; transition: var(--transition); }
+
+    /* NAVEGACIÓN */
+    nav {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand { font-size: 1.4rem; font-weight: 800; text-decoration: none; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+    .brand span { color: var(--primary); }
+
+    .nav-actions { display: flex; align-items: center; gap: 12px; }
+
+    .lang-select, .theme-toggle {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .btn-icon { background: transparent; border: none; color: var(--text-main); font-size: 1.2rem; cursor: pointer; position: relative; }
+    .badge-count { position: absolute; top: -6px; right: -8px; background: var(--primary); color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
+
+    /* CONTENEDOR PRINCIPAL */
+    .container { max-width: 1200px; margin: 25px auto; padding: 0 20px; width: 100%; flex: 1; }
+    .view-section { display: none; animation: fadeIn 0.3s ease-in-out; }
+    .view-section.active { display: block; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* COMPONENTES CARD Y BOTONES */
+    .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
+    .btn { padding: 10px 18px; background: var(--primary); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+    .btn:hover { background: var(--primary-hover); }
+    .btn-secondary { background: var(--border-color); color: var(--text-main); }
+    .btn-danger { background: var(--danger); }
+    .btn-success { background: var(--success); }
+    .btn-sm { padding: 5px 10px; font-size: 0.8rem; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; font-weight: 600; }
+    .form-control { width: 100%; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-main); font-size: 0.95rem; }
+    .form-control:focus { outline: 1px solid var(--primary); }
+
+    /* SWITCH TOGGLE */
+    .switch-label { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+    .switch { position: relative; display: inline-block; width: 46px; height: 24px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; inset: 0; background-color: var(--border-color); transition: .3s; border-radius: 24px; }
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+    input:checked + .slider { background-color: var(--success); }
+    input:checked + .slider:before { transform: translateX(22px); }
+
+    /* GRIDS */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+    @media (max-width: 850px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+    /* TABLAS Y PESTAÑAS */
+    .table-container { overflow-x: auto; margin-top: 15px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left; }
+    th, td { padding: 12px 15px; border-bottom: 1px solid var(--border-color); }
+    th { background: var(--bg-input); color: var(--text-muted); }
+
+    .tab-menu { display: flex; gap: 10px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+    .tab-btn { background: transparent; border: none; color: var(--text-muted); padding: 8px 16px; cursor: pointer; font-weight: 600; border-bottom: 2px solid transparent; white-space: nowrap; }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+    /* COMENTARIOS */
+    .comment-card { background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 12px; }
+    .comment-header { display: flex; justify-content: space-between; font-weight: bold; font-size: 0.9rem; margin-bottom: 5px; }
+
+    /* FOOTER EXHAUSTIVO */
+    footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-color);
+      padding: 40px 20px 20px;
+      margin-top: auto;
+    }
+    .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 30px; margin-bottom: 30px; }
+    .footer-col h4 { margin-bottom: 14px; color: var(--primary); font-size: 1rem; }
+    .footer-col p, .footer-col a { color: var(--text-muted); font-size: 0.88rem; text-decoration: none; display: block; margin-bottom: 8px; }
+    .footer-col a:hover { color: var(--primary); }
+    .footer-bottom { text-align: center; border-top: 1px solid var(--border-color); padding-top: 18px; font-size: 0.85rem; color: var(--text-muted); }
+
+    .admin-trigger { cursor: pointer; color: var(--text-muted); opacity: 0.7; transition: opacity 0.2s; }
+    .admin-trigger:hover { opacity: 1; color: var(--primary); }
+
+    /* MODAL */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; }
+    .modal-content { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 30px; width: 100%; max-width: 400px; }
+  </style>
 </head>
-<body class="text-white antialiased">
+<body>
 
-    <div id="particles"></div>
+  <!-- ENCABEZADO Y NAVEGACIÓN -->
+  <nav>
+    <a href="#" class="brand" onclick="switchView('storeView')"><i class="fa-solid fa-mobile-screen-button"></i> VIBEPHONE <span>RD</span></a>
+    
+    <div class="nav-actions">
+      <!-- Selector de 12 Idiomas -->
+      <select id="langSelector" class="lang-select" onchange="changeLanguage(this.value)">
+        <option value="es">🇪🇸 Español</option>
+        <option value="en">🇺🇸 English</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="pt">🇵🇹 Português</option>
+        <option value="br">🇧🇷 Português (BR)</option>
+        <option value="zh">🇨🇳 中文</option>
+        <option value="ja">🇯🇵 日本語</option>
+        <option value="ko">🇰🇷 한국어</option>
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="ar">🇸🇦 العربية</option>
+      </select>
 
-    <!-- ========================================== -->
-    <!--          VISTA 1: TIENDA PÚBLICA          -->
-    <!-- ========================================== -->
-    <div id="storeView" class="block">
-        <!-- HEADER -->
-        <header class="fixed top-0 left-0 w-full z-50 glass">
-            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-                <h1 class="text-2xl md:text-3xl font-black">Vibe<span class="text-primary">phones</span> RD</h1>
-                <div class="flex items-center gap-3">
-                    <button onclick="toggleFavoritesPanel()" class="glass w-12 h-12 md:w-14 md:h-14 rounded-2xl relative">
-                        <i class="fa-solid fa-heart text-red-500"></i>
-                        <span id="favCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
-                    </button>
-                    <button onclick="toggleDarkMode()" class="glass w-12 h-12 md:w-14 md:h-14 rounded-2xl">
-                        <i class="fa-solid fa-moon"></i>
-                    </button>
-                </div>
+      <button class="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon" id="themeIcon"></i></button>
+
+      <!-- Carrito -->
+      <button class="btn-icon" onclick="switchView('cartView')">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span class="badge-count" id="cartCount">0</span>
+      </button>
+
+      <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.85rem;" onclick="switchView('customerPortalView')">
+        <i class="fa-solid fa-user"></i> <span id="lblMyAccount">Mi Cuenta</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- CONTENEDOR PRINCIPAL DE VISTAS -->
+  <div class="container">
+
+    <!-- 1. VISTA TIENDA / CATÁLOGO -->
+    <section id="storeView" class="view-section active">
+      <div class="card" style="text-align: center;">
+        <h1 id="txtBannerTitle">VibePhone RD Premium System</h1>
+        <p style="color: var(--text-muted); margin-top: 8px;" id="txtBannerSubtitle">Tecnología avanzada, dispositivos y soporte técnico especializado.</p>
+        
+        <div style="margin-top: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+          <button class="btn" onclick="switchView('storeView')"><i class="fa-solid fa-store"></i> <span id="lblCatalogBtn">Ver Catálogo</span></button>
+          
+          <!-- Botón Reparación (Controlado por Admin) -->
+          <button id="btnNavRepair" class="btn btn-secondary" onclick="handleRepairClick()">
+            <i class="fa-solid fa-wrench"></i> <span id="lblRepairBtn">Servicio de Reparación</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- BUSCADOR Y FILTROS AVANZADOS DEL CATÁLOGO -->
+      <div class="card" style="padding: 16px;">
+        <div class="grid-3">
+          <div class="form-group" style="margin-bottom:0;">
+            <label id="lblSearch">Buscar Producto</label>
+            <input type="text" id="searchCatalogInput" class="form-control" placeholder="iPhone, Samsung, Cargador..." oninput="filterProducts()">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label id="lblCategory">Categoría</label>
+            <select id="filterCategorySelect" class="form-control" onchange="filterProducts()">
+              <option value="all">Todas las Categorías</option>
+              <option value="Smartphones">Smartphones</option>
+              <option value="Accesorios">Accesorios</option>
+              <option value="Repuestos">Repuestos / Pantallas</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label id="lblMaxPrice">Precio Máximo ($)</label>
+            <input type="number" id="filterPriceInput" class="form-control" placeholder="Ej: 500" oninput="filterProducts()">
+          </div>
+        </div>
+      </div>
+
+      <h2 style="margin-bottom: 15px;" id="lblProductsTitle">Catálogo de Productos</h2>
+      <div class="grid-4" id="productsGrid"></div>
+
+      <!-- RESTAURADO COMPLETO: CAJA DE COMENTARIOS Y RESEÑAS -->
+      <div class="card" style="margin-top: 30px;">
+        <h3><i class="fa-solid fa-comments"></i> <span id="lblReviewsTitle">Opiniones y Comentarios de Clientes</span></h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Déjanos tu experiencia o consulta para responderte a la brevedad.</p>
+        
+        <form id="commentForm" style="margin-bottom: 20px;">
+          <div class="grid-2">
+            <div class="form-group">
+              <label>Tu Nombre</label>
+              <input type="text" id="commAuthor" class="form-control" placeholder="Ej: Carlos Gómez" required>
             </div>
-        </header>
-
-        <!-- HERO -->
-        <section class="pt-36 pb-12 px-6 relative">
-            <div class="container mx-auto grid lg:grid-cols-2 gap-12 items-center">
-                <div>
-                    <span class="bg-primary/20 text-primary px-4 py-1.5 rounded-full text-xs font-bold">🔥 Tecnología Premium</span>
-                    <h2 class="text-4xl md:text-6xl font-black mt-4 leading-tight">La Nueva Era de los <span class="text-primary">Smartphones</span></h2>
-                    <p class="text-gray-400 mt-4 text-base md:text-lg">Equipos premium certificados, garantía real, soporte técnico y la mejor experiencia de compra en RD.</p>
-                    <div class="flex flex-wrap gap-4 mt-8">
-                        <button onclick="scrollProducts()" class="btn-premium px-6 py-3.5 rounded-2xl font-black text-sm">Ver Catálogo</button>
-                        <button onclick="openWhatsApp()" class="glass px-6 py-3.5 rounded-2xl font-black text-sm">Contactar VIP</button>
-                    </div>
-                </div>
-                <div class="relative flex justify-center">
-                    <div class="absolute w-[280px] h-[280px] md:w-[450px] md:h-[450px] bg-primary/20 rounded-full blur-[90px]"></div>
-                    <img src="https://m.media-amazon.com/images/I/61H69zNoKCL._AC_SL1500_.jpg" class="relative z-10 w-[260px] md:w-[360px] float">
-                </div>
+            <div class="form-group">
+              <label>Calificación</label>
+              <select id="commRating" class="form-control">
+                <option value="5">⭐⭐⭐⭐⭐ (Excelente)</option>
+                <option value="4">⭐⭐⭐⭐ (Muy Bueno)</option>
+                <option value="3">⭐⭐⭐ (Bueno)</option>
+                <option value="2">⭐⭐ (Regular)</option>
+                <option value="1">⭐ (Malo)</option>
+              </select>
             </div>
-        </section>
+          </div>
+          <div class="form-group">
+            <label>Comentario</label>
+            <textarea id="commText" class="form-control" rows="3" placeholder="Escribe tu mensaje aquí..." required></textarea>
+          </div>
+          <button type="submit" class="btn"><i class="fa-solid fa-paper-plane"></i> Publicar Comentario</button>
+        </form>
 
-        <!-- SLIDER COMPACTO Y ELEGANTE -->
-        <section class="container mx-auto px-6 pb-12">
-            <h2 class="text-2xl md:text-3xl font-black text-center mb-6">Equipos Destacados</h2>
-            <div class="swiper-container-wrapper glass p-4 rounded-[2rem]">
-                <div class="swiper">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide"><img src="https://m.media-amazon.com/images/I/61H69zNoKCL._AC_SL1500_.jpg"></div>
-                        <div class="swiper-slide"><img src="https://m.media-amazon.com/images/I/71T5NVOgbpL._AC_SL1500_.jpg"></div>
-                        <div class="swiper-slide"><img src="https://m.media-amazon.com/images/I/61amb0CfMGL._AC_SL1500_.jpg"></div>
-                    </div>
-                    <div class="swiper-pagination"></div>
-                </div>
-            </div>
-        </section>
+        <div id="commentsContainer"></div>
+      </div>
+    </section>
 
-        <!-- BUSCADOR -->
-        <section class="container mx-auto px-6 mb-8">
-            <div class="glass rounded-2xl md:rounded-[30px] p-2 md:p-3 flex items-center">
-                <i class="fa-solid fa-magnifying-glass text-primary text-lg ml-4"></i>
-                <input type="text" id="searchInput" placeholder="Buscar marcas o modelos..." onkeyup="filterProducts()" class="bg-transparent outline-none w-full px-4 py-3 text-base">
-            </div>
-        </section>
-
-        <!-- CATEGORÍAS -->
-        <section class="container mx-auto px-6 mb-10 overflow-x-auto whitespace-nowrap scrollbar-none">
-            <div class="flex gap-3">
-                <button onclick="filterCategory('all')" class="btn-premium px-5 py-2.5 rounded-xl font-black text-sm">Todos</button>
-                <button onclick="filterCategory('iphone')" class="glass px-5 py-2.5 rounded-xl font-black text-sm">iPhone</button>
-                <button onclick="filterCategory('samsung')" class="glass px-5 py-2.5 rounded-xl font-black text-sm">Samsung</button>
-                <button onclick="filterCategory('accesorio')" class="glass px-5 py-2.5 rounded-xl font-black text-sm">Accesorios</button>
-            </div>
-        </section>
-
-        <!-- PRODUCTOS -->
-        <section id="productos" class="container mx-auto px-6 pb-24">
-            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
-        </section>
-
-        <!-- PANEL DE FAVORITOS RESPONSIVO -->
-        <div id="favoritesPanel" class="fixed top-0 right-[-100%] md:right-[-500px] w-full md:w-[400px] h-full bg-[#050816] border-l border-white/10 z-[999] transition-all duration-500 overflow-y-auto">
-            <div class="p-6">
-                <div class="flex justify-between items-center">
-                    <h2 class="text-2xl font-black">Mis Favoritos</h2>
-                    <button onclick="toggleFavoritesPanel()"><i class="fa-solid fa-xmark text-2xl"></i></button>
-                </div>
-                <div id="favoritesList" class="mt-8 space-y-4"></div>
-            </div>
+    <!-- 2. VISTA REPARACIONES (CONSULTA IMEI/FICHA) -->
+    <section id="repairView" class="view-section">
+      <div class="card">
+        <h2><i class="fa-solid fa-screwdriver-wrench"></i> Consulta y Estado de Reparación</h2>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Ingresa tu código IMEI o número de Ficha para ver el avance técnico de tu equipo.</p>
+        
+        <div style="display: flex; gap: 10px; max-width: 500px;">
+          <input type="text" id="trackInput" class="form-control" placeholder="Ej: 356789012345678">
+          <button class="btn" onclick="trackRepairDevice()"><i class="fa-solid fa-magnifying-glass"></i> Consultar</button>
         </div>
 
-        <!-- FOOTER CON ACCESO INVISIBLE CORPORATIVO -->
-        <footer class="border-t border-white/10 py-12 bg-darkbg">
-            <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left mb-8">
-                <div>
-                    <h3 class="text-2xl font-black">Vibephones RD</h3>
-                    <p class="text-gray-400 mt-2 text-sm">Los mejores dispositivos móviles con calidad premium garantizada en Santo Domingo.</p>
-                </div>
-                <div>
-                    <h4 class="font-black text-primary">Contacto</h4>
-                    <p class="text-gray-400 text-sm mt-2">📍 Santo Domingo, República Dominicana</p>
-                    <p class="text-gray-400 text-sm">📱 809-818-2320</p>
-                </div>
-                <div>
-                    <h4 class="font-black text-primary">Atención</h4>
-                    <p class="text-gray-400 text-sm mt-2">Lunes a Sábado: 9:00 AM - 7:00 PM</p>
-                </div>
-            </div>
-            <!-- ENTRADA OCULTA: DOBLE CLIC EN EL COPYRIGHT -->
-            <div class="text-center text-gray-500 text-sm border-t border-white/5 pt-6 select-none">
-                <span ondblclick="openLogin()" class="cursor-default hover:text-gray-400 transition" title="Vibephones System">
-                    © 2026 Vibephones RD
-                </span>
-            </div>
-        </footer>
-    </div>
+        <div id="repairResult" style="display: none; margin-top: 20px;" class="card"></div>
+      </div>
+    </section>
 
-    <!-- ========================================== -->
-    <!--        VISTA 2: PANTALLA LOGIN ADMIN       -->
-    <!-- ========================================== -->
-    <div id="loginScreen" class="hidden fixed inset-0 z-[9999] bg-[#050816] flex items-center justify-center p-4">
-        <div class="glass rounded-[2.5rem] p-8 w-full max-w-sm text-center">
-            <div class="w-20 h-20 mx-auto rounded-2xl bg-primary/20 flex items-center justify-center text-primary text-3xl mb-6">
-                <i class="fa-solid fa-user-gear"></i>
-            </div>
-            <h2 class="text-3xl font-black">VibeMaster</h2>
-            <p class="text-gray-400 text-sm mt-2 mb-6">Autenticación de Seguridad</p>
-            <input type="password" id="adminPass" placeholder="••••" class="input-premium w-full p-4 rounded-xl outline-none text-center text-xl tracking-[8px] mb-4">
-            <div class="flex gap-3">
-                <button onclick="closeLogin()" class="glass w-1/3 py-4 rounded-xl text-xs font-bold uppercase">Cerrar</button>
-                <button onclick="checkPass()" class="btn-premium w-2/3 py-4 rounded-xl font-black text-sm uppercase tracking-wider">Acceder</button>
-            </div>
+    <!-- 3. VISTA CARRITO DE COMPRAS -->
+    <section id="cartView" class="view-section">
+      <div class="card">
+        <h2><i class="fa-solid fa-cart-shopping"></i> Carrito de Compras</h2>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr><th>Producto</th><th>Precio</th><th>Cantidad</th><th>Subtotal</th><th>Acción</th></tr>
+            </thead>
+            <tbody id="cartTableBody"></tbody>
+          </table>
         </div>
-    </div>
+        <div style="margin-top: 20px; text-align: right;">
+          <h3>Total: $<span id="cartTotal">0.00</span></h3>
+          <button class="btn btn-success" style="margin-top: 10px;" onclick="processCheckout()"><i class="fa-solid fa-check"></i> Procesar Orden</button>
+        </div>
+      </div>
+    </section>
 
-    <!-- ========================================== -->
-    <!--   VISTA 3: PANEL ADMINISTRATIVO AVANZADO   -->
-    <!-- ========================================== -->
-    <div id="mainAdmin" class="hidden min-h-screen flex flex-col lg:flex-row">
-        <!-- SIDEBAR -->
-        <aside class="w-full lg:w-80 glass lg:min-h-screen p-6 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-white/10">
-            <div>
-                <div class="flex items-center justify-between lg:block mb-6 lg:mb-8">
-                    <div>
-                        <h2 class="text-2xl font-black tracking-tight">Vibe<span class="text-primary">Master</span></h2>
-                        <p class="text-xs text-gray-400">Sistema Financiero RD</p>
-                    </div>
-                    <button onclick="exitAdmin()" class="lg:hidden bg-white/5 px-4 py-2 rounded-xl text-xs font-bold">Salir</button>
-                </div>
-                <div class="grid grid-cols-2 lg:grid-cols-1 gap-2">
-                    <div class="p-4 rounded-xl bg-primary/10 border border-primary/20">
-                        <span class="text-xs text-gray-400 block">Equipos Registrados</span>
-                        <span id="lblTotalEquipos" class="text-2xl font-black text-primary">0</span>
-                    </div>
-                    <div class="p-4 rounded-xl bg-green-500/10 border border-green-500/20">
-                        <span class="text-xs text-gray-400 block">Margen Neto Total</span>
-                        <span id="lblGananciaTotal" class="text-2xl font-black text-green-400">RD$0</span>
-                    </div>
-                </div>
-            </div>
-            <div class="hidden lg:block pt-6">
-                <button onclick="exitAdmin()" class="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 py-3.5 rounded-xl font-bold text-sm transition">
-                    <i class="fa-solid fa-arrow-left-long mr-2"></i>Regresar a Vitrina
-                </button>
-            </div>
-        </aside>
+    <!-- 4. PORTAL CLIENTE (LOGIN + DASHBOARD CLIENTE EXHAUSTIVO) -->
+    <section id="customerPortalView" class="view-section">
+      <div class="card" id="customerAuthCard" style="max-width: 450px; margin: 0 auto;">
+        <h2 style="text-align: center; margin-bottom: 15px;">Acceso de Clientes</h2>
+        <form id="customerAuthForm" onsubmit="event.preventDefault(); loginCustomer();">
+          <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" id="custEmail" class="form-control" placeholder="cliente@correo.com" required>
+          </div>
+          <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" id="custPass" class="form-control" required>
+          </div>
+          <button type="submit" class="btn" style="width: 100%;">Iniciar Sesión</button>
+        </form>
+      </div>
 
-        <!-- CUADRO CENTRAL FINANCIERO -->
-        <main class="flex-1 p-4 md:p-8 lg:p-12 overflow-x-hidden">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-                <div>
-                    <h1 class="text-3xl md:text-4xl font-black tracking-tight">Control Financiero</h1>
-                    <p class="text-sm text-gray-400">Modelación de Costos, Precios de Venta e Inversiones</p>
-                </div>
-                <button onclick="toggleModal()" class="btn-premium px-6 py-3.5 rounded-xl text-sm font-black flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-square-plus text-base"></i> Ingresar Dispositivo
-                </button>
+      <!-- Portal del Cliente Logueado -->
+      <div id="customerDashboardCard" style="display: none;">
+        <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h2>Bienvenido, <span id="lblCustName">Cliente VibePhone</span></h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem;" id="lblCustEmail">cliente@correo.com</p>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="logoutCustomer()">Cerrar Sesión</button>
+        </div>
+
+        <div class="tab-menu">
+          <button class="tab-btn active" onclick="switchCustTab(this, 'custOrders')"><i class="fa-solid fa-box"></i> Compras</button>
+          <button class="tab-btn" onclick="switchCustTab(this, 'custRepairs')"><i class="fa-solid fa-wrench"></i> Reparaciones</button>
+          <button class="tab-btn" onclick="switchCustTab(this, 'custWarranties')"><i class="fa-solid fa-shield-halved"></i> Garantías</button>
+          <button class="tab-btn" onclick="switchCustTab(this, 'custAddresses')"><i class="fa-solid fa-location-dot"></i> Direcciones</button>
+        </div>
+
+        <div id="custOrders" class="cust-tab-content card">
+          <h3>Historial de Compras</h3>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>Orden #</th><th>Fecha</th><th>Total</th><th>Estado</th></tr></thead>
+              <tbody>
+                <tr><td>#ORD-8921</td><td>2026-06-15</td><td>$650.00</td><td><span style="color:var(--success)">Entregado</span></td></tr>
+                <tr><td>#ORD-7710</td><td>2026-05-02</td><td>$25.00</td><td><span style="color:var(--success)">Entregado</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="custRepairs" class="cust-tab-content card" style="display:none;">
+          <h3>Equipos en Reparación</h3>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>Ficha</th><th>Dispositivo</th><th>Falla</th><th>Estado</th></tr></thead>
+              <tbody>
+                <tr><td>#REP-1042</td><td>Samsung Galaxy S21</td><td>Cambio de Pantalla OLED</td><td><span style="color:var(--warning)">En Diagnóstico</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="custWarranties" class="cust-tab-content card" style="display:none;">
+          <h3>Garantías Activas</h3>
+          <p style="color: var(--text-muted); font-size:0.9rem;">iPhone 13 Pro 128GB - Garantía válida hasta <strong>2026-12-15</strong> (6 Meses restantes).</p>
+        </div>
+
+        <div id="custAddresses" class="cust-tab-content card" style="display:none;">
+          <h3>Direcciones de Envío Guardadas</h3>
+          <p style="font-size:0.9rem;">📍 Santo Domingo, República Dominicana (Principal)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. PANEL DE ADMINISTRACIÓN COMPLETO Y PROTEGIDO -->
+    <section id="adminDashboardView" class="view-section">
+      <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h2><i class="fa-solid fa-user-shield"></i> Panel de Administración Global</h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Control Total de VibePhone RD</p>
+        </div>
+        <button class="btn btn-danger" onclick="switchView('storeView')">Cerrar Sesión Admin</button>
+      </div>
+
+      <!-- Menú de Pestañas Admin -->
+      <div class="tab-menu">
+        <button class="tab-btn active" onclick="switchAdminTab(this, 'adminGeneralTab')"><i class="fa-solid fa-sliders"></i> General & Seguridad</button>
+        <button class="tab-btn" onclick="switchAdminTab(this, 'adminInventoryTab')"><i class="fa-solid fa-boxes-stacked"></i> Inventario / Productos</button>
+        <button class="tab-btn" onclick="switchAdminTab(this, 'adminSalesTab')"><i class="fa-solid fa-file-invoice-dollar"></i> Ventas & Facturas</button>
+        <button class="tab-btn" onclick="switchAdminTab(this, 'adminCustomersTab')"><i class="fa-solid fa-users"></i> Clientes</button>
+        <button class="tab-btn" onclick="switchAdminTab(this, 'adminReportsTab')"><i class="fa-solid fa-chart-line"></i> Reportes & Métricas</button>
+      </div>
+
+      <!-- PESTAÑA 1: GENERAL & SEGURIDAD -->
+      <div id="adminGeneralTab" class="admin-tab-content">
+        <div class="grid-2">
+          <!-- Configuración Servicio de Reparaciones -->
+          <div class="card">
+            <h3><i class="fa-solid fa-wrench"></i> Servicio de Reparación</h3>
+            <hr style="border-color: var(--border-color); margin: 15px 0;">
+
+            <div class="form-group switch-label">
+              <div>
+                <strong>Estado del Botón / Servicio</strong>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Activar o desactivar servicio para clientes</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleRepairService" onchange="saveConfigToFirebase()">
+                <span class="slider"></span>
+              </label>
             </div>
 
-            <!-- METRICAS EN TIEMPO REAL ($PRECIO - COSTO$) -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-8">
-                <div class="glass p-6 rounded-2xl border-l-4 border-blue-500">
-                    <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Capital de Inversión</span>
-                    <h3 id="lblCostoInversion" class="text-2xl md:text-3xl font-black mt-2 text-blue-400">RD$0</h3>
-                    <p class="text-[11px] text-gray-500 mt-1">Costo total en almacén</p>
-                </div>
-                <div class="glass p-6 rounded-2xl border-l-4 border-primary">
-                    <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Valor Estimado Venta</span>
-                    <h3 id="lblValorVenta" class="text-2xl md:text-3xl font-black mt-2 text-primary">RD$0</h3>
-                    <p class="text-[11px] text-gray-500 mt-1">Ingreso bruto potencial</p>
-                </div>
-                <div class="glass p-6 rounded-2xl border-l-4 border-green-500">
-                    <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Proyección de Ganancia</span>
-                    <h3 id="lblGananciaNeta" class="text-2xl md:text-3xl font-black mt-2 text-green-400">RD$0</h3>
-                    <p class="text-[11px] text-gray-500 mt-1">Retorno limpio operativo disponible</p>
-                </div>
+            <div class="form-group" style="margin-top: 15px;">
+              <label>Mensaje si está Desactivado</label>
+              <input type="text" id="cfgDisabledMsg" class="form-control" value="El servicio de reparaciones no está disponible en este momento." onchange="saveConfigToFirebase()">
             </div>
+          </div>
 
-            <!-- INVENTARIO ADMINISTRATIVO RESPONSIVO -->
-            <div class="glass rounded-2xl border border-white/10 overflow-hidden">
-                <div class="p-5 border-b border-white/5 bg-white/[0.01]">
-                    <h3 class="font-black text-lg">Catálogo Maestro de Productos</h3>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse min-w-[700px]">
-                        <thead>
-                            <tr class="bg-white/[0.02] text-gray-400 text-xs font-bold uppercase border-b border-white/5">
-                                <th class="p-4 pl-6">Especificaciones de Equipo</th>
-                                <th class="p-4">Categoría</th>
-                                <th class="p-4 text-right">Costo Corporativo</th>
-                                <th class="p-4 text-right">Precio de Venta</th>
-                                <th class="p-4 text-right text-green-400">Margen Neto</th>
-                                <th class="p-4 text-center">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inventoryRows" class="divide-y divide-white/[0.03] text-sm"></tbody>
-                    </table>
-                </div>
-            </div>
-        </main>
-    </div>
+          <!-- Configuración PIN Admin Sincronizado en Firebase -->
+          <div class="card">
+            <h3><i class="fa-solid fa-key"></i> Clave / PIN del Administrador</h3>
+            <hr style="border-color: var(--border-color); margin: 15px 0;">
 
-    <!-- MODAL REGISTRO DE DISPOSITIVOS -->
-    <div id="productModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center z-[9999] p-4">
-        <div class="glass w-full max-w-xl rounded-3xl p-6 md:p-8 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h3 class="text-2xl font-black">Registrar Nuevo Equipo</h3>
-                    <p class="text-xs text-gray-400 mt-1">Sube nuevos productos directamente al catálogo</p>
-                </div>
-                <button onclick="toggleModal()" class="text-gray-400 hover:text-white text-2xl"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <form id="frmAddProduct" class="space-y-4">
-                <div>
-                    <label class="text-xs text-gray-400 font-bold block mb-1">Nombre del Dispositivo</label>
-                    <input type="text" id="inpName" placeholder="Ej. iPhone 15 Pro Max" required class="input-premium w-full p-3.5 rounded-xl outline-none text-sm">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-xs text-gray-400 font-bold block mb-1">Costo de Compra (RD$)</label>
-                        <input type="number" id="inpCost" placeholder="Inversión" required class="input-premium w-full p-3.5 rounded-xl outline-none text-sm">
-                    </div>
-                    <div>
-                        <label class="text-xs text-gray-400 font-bold block mb-1">Precio de Venta (RD$)</label>
-                        <input type="number" id="inpPrice" placeholder="Al público" required class="input-premium w-full p-3.5 rounded-xl outline-none text-sm">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-xs text-gray-400 font-bold block mb-1">Categoría</label>
-                        <select id="inpCategory" class="input-premium w-full p-3.5 rounded-xl outline-none text-sm appearance-none">
-                            <option value="iphone">iPhone</option>
-                            <option value="samsung">Samsung</option>
-                            <option value="accesorio">Accesorio</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs text-gray-400 font-bold block mb-1">IMEI / Serie</label>
-                        <input type="text" id="inpImei" placeholder="Opcional" class="input-premium w-full p-3.5 rounded-xl outline-none text-sm">
-                    </div>
-                </div>
-                <div>
-                    <label class="text-xs text-gray-400 font-bold block mb-1">URL Imagen</label>
-                    <input type="url" id="inpImage" placeholder="https://m.media-amazon.com/..." class="input-premium w-full p-3.5 rounded-xl outline-none text-sm">
-                </div>
-                <button type="submit" class="btn-premium w-full py-4 rounded-xl font-black text-sm uppercase tracking-wider mt-2">Añadir al Inventario Global</button>
+            <form id="adminPinForm">
+              <div class="form-group">
+                <label>PIN Administrativo Actual / Nuevo</label>
+                <input type="password" id="adminPinInput" class="form-control" value="Avd121094" required>
+              </div>
+              <button type="submit" class="btn" style="width: 100%;"><i class="fa-solid fa-floppy-disk"></i> Guardar Nuevo PIN en Firebase</button>
             </form>
+          </div>
         </div>
+      </div>
+
+      <!-- PESTAÑA 2: INVENTARIO Y GESTIÓN DE PRODUCTOS -->
+      <div id="adminInventoryTab" class="admin-tab-content" style="display:none;">
+        <div class="grid-2">
+          <!-- Formulario Agregar Producto -->
+          <div class="card">
+            <h3><i class="fa-solid fa-plus-circle"></i> Agregar Nuevo Producto</h3>
+            <form id="addProductForm" style="margin-top:15px;">
+              <div class="form-group">
+                <label>Nombre del Producto</label>
+                <input type="text" id="pTitle" class="form-control" placeholder="Ej: iPhone 14 Pro 256GB" required>
+              </div>
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>Precio ($ USD)</label>
+                  <input type="number" step="0.01" id="pPrice" class="form-control" placeholder="799.00" required>
+                </div>
+                <div class="form-group">
+                  <label>Categoría</label>
+                  <select id="pCategory" class="form-control">
+                    <option value="Smartphones">Smartphones</option>
+                    <option value="Accesorios">Accesorios</option>
+                    <option value="Repuestos">Repuestos</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Ícono / Emoji Ilustrativo</label>
+                <input type="text" id="pImg" class="form-control" value="📱" required>
+              </div>
+              <button type="submit" class="btn btn-success" style="width:100%;"><i class="fa-solid fa-plus"></i> Guardar Producto</button>
+            </form>
+          </div>
+
+          <!-- Tabla de Productos Existentes -->
+          <div class="card">
+            <h3><i class="fa-solid fa-list"></i> Productos en Catálogo</h3>
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Acción</th></tr></thead>
+                <tbody id="adminProductsTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 3: VENTAS Y FACTURAS -->
+      <div id="adminSalesTab" class="admin-tab-content" style="display:none;">
+        <div class="card">
+          <h3><i class="fa-solid fa-receipt"></i> Historial de Ventas y Facturación</h3>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>Factura #</th><th>Cliente</th><th>Fecha</th><th>Monto</th><th>Estado</th></tr></thead>
+              <tbody>
+                <tr><td>#FAC-1001</td><td>Juan Pérez</td><td>2026-07-20</td><td>$675.00</td><td><span style="color:var(--success)">Pagado</span></td></tr>
+                <tr><td>#FAC-1002</td><td>Maria Rodríguez</td><td>2026-07-21</td><td>$25.00</td><td><span style="color:var(--success)">Pagado</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 4: CLIENTES -->
+      <div id="adminCustomersTab" class="admin-tab-content" style="display:none;">
+        <div class="card">
+          <h3><i class="fa-solid fa-address-book"></i> Clientes Registrados</h3>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Teléfono</th><th>Total Compras</th></tr></thead>
+              <tbody>
+                <tr><td>#CUST-1</td><td>Pedro Martínez</td><td>pedro@gmail.com</td><td>+1 (809) 555-0192</td><td>$650.00</td></tr>
+                <tr><td>#CUST-2</td><td>Laura Sánchez</td><td>laura@hotmail.com</td><td>+1 (829) 555-0143</td><td>$135.00</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 5: REPORTES Y MÉTRICAS -->
+      <div id="adminReportsTab" class="admin-tab-content" style="display:none;">
+        <div class="grid-3">
+          <div class="card" style="text-align:center;">
+            <i class="fa-solid fa-chart-column" style="font-size:2rem; color:var(--primary);"></i>
+            <h2 style="margin-top:10px;">$2,450.00</h2>
+            <p style="color:var(--text-muted); font-size:0.85rem;">Ingresos Totales (Este Mes)</p>
+          </div>
+          <div class="card" style="text-align:center;">
+            <i class="fa-solid fa-screwdriver-wrench" style="font-size:2rem; color:var(--warning);"></i>
+            <h2 style="margin-top:10px;">14</h2>
+            <p style="color:var(--text-muted); font-size:0.85rem;">Reparaciones Completadas</p>
+          </div>
+          <div class="card" style="text-align:center;">
+            <i class="fa-solid fa-box" style="font-size:2rem; color:var(--success);"></i>
+            <h2 style="margin-top:10px;" id="lblTotalProdCount">3</h2>
+            <p style="color:var(--text-muted); font-size:0.85rem;">Productos Activos en Tienda</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- PIE DE PÁGINA COMPLETO Y DETALLADO -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>VibePhone RD</h4>
+        <p>Tu tienda de confianza para compra de dispositivos móviles, accesorios de alta gama y servicio técnico especializado.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Contacto & Ubicación</h4>
+        <p><i class="fa-solid fa-location-dot"></i> República Dominicana</p>
+        <p><i class="fa-solid fa-phone"></i> +1 (809) 000-0000</p>
+        <p><i class="fa-solid fa-envelope"></i> soporte@vibephonerd.com</p>
+      </div>
+      <div class="footer-col">
+        <h4>Horarios de Atención</h4>
+        <p>Lunes a Viernes: 8:00 AM - 7:00 PM</p>
+        <p>Sábados: 9:00 AM - 5:00 PM</p>
+        <p>Domingos: Cerrado</p>
+      </div>
+      <div class="footer-col">
+        <h4>Redes Sociales</h4>
+        <a href="#"><i class="fa-brands fa-instagram"></i> Instagram</a>
+        <a href="#"><i class="fa-brands fa-facebook"></i> Facebook</a>
+        <a href="#"><i class="fa-brands fa-whatsapp"></i> WhatsApp Directo</a>
+      </div>
     </div>
 
-    <!-- TOAST NOTIFICACIÓN -->
-    <div id="toast" class="toast glass rounded-2xl p-4 text-sm font-bold">❤️ ¡Guardado en favoritos con éxito!</div>
+    <div class="footer-bottom">
+      <p>
+        <span class="admin-trigger" onclick="openAdminModal()" title="Acceso Administrativo por PIN">
+          © 2026 VIBEPHONE RD PREMIUM SYSTEM. Todos los derechos reservados.
+        </span>
+      </p>
+    </div>
+  </footer>
 
-    <!-- LÓGICA DE CONTROL DEL NEGOCIO -->
-    <script>
-        /* BASE DE DATOS LOCAL SINCRONIZADA */
-        let database = JSON.parse(localStorage.getItem('vibe_inventory')) || [
-            {id:1, name:"iPhone 14 Pro", price:41900, cost:34000, category:"iphone", imei:"3584...", image:"https://m.media-amazon.com/images/I/61H69zNoKCL._AC_SL1500_.jpg"},
-            {id:2, name:"Samsung S24 Ultra", price:58900, cost:49000, category:"samsung", imei:"3522...", image:"https://m.media-amazon.com/images/I/71T5NVOgbpL._AC_SL1500_.jpg"},
-            {id:3, name:"AirPods Pro", price:9900, cost:7000, category:"accesorio", imei:"N/A", image:"https://m.media-amazon.com/images/I/61SUj2aKoEL._AC_SL1500_.jpg"},
-            {id:4, name:"iPhone 15 Pro Max", price:69900, cost:58000, category:"iphone", imei:"3591...", image:"https://m.media-amazon.com/images/I/81fxjeu8fdL._AC_SL1500_.jpg"}
-        ];
+  <!-- MODAL DE ENTRADA CON PIN ADMINISTRADOR -->
+  <div id="adminModal" class="modal-backdrop">
+    <div class="modal-content">
+      <h3 style="margin-bottom: 10px; text-align: center;"><i class="fa-solid fa-lock"></i> Acceso Administrador</h3>
+      <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-bottom: 15px;">
+        Ingresa tu PIN de seguridad para acceder al panel global.
+      </p>
 
-        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+      <form id="adminLoginForm">
+        <div class="form-group">
+          <label>PIN de Seguridad</label>
+          <input type="password" id="inputAdminPin" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn" style="width: 100%;">Ingresar</button>
+        <button type="button" class="btn btn-secondary" style="width: 100%; margin-top: 8px;" onclick="closeAdminModal()">Cancelar</button>
+      </form>
+    </div>
+  </div>
 
-        /* CONTROL DE VISTAS (SPA) */
-        function openLogin() { document.getElementById('loginScreen').style.display = 'flex'; }
-        function closeLogin() { document.getElementById('loginScreen').style.display = 'none'; document.getElementById('adminPass').value = ''; }
-        
-        function checkPass(){
-            const pass = document.getElementById('adminPass').value;
-            if(pass === '2026') {
-                closeLogin();
-                document.getElementById('storeView').style.display = 'none';
-                document.getElementById('mainAdmin').classList.remove('hidden');
-                calculateAndRenderAdmin();
-            } else {
-                alert('Código Incorrecto');
-            }
+  <!-- JAVASCRIPT INTEGRADO CON LÓGICA COMPLETA Y FIREBASE -->
+  <script>
+    // 1. CONFIGURACIÓN FIREBASE COMPAT
+    const firebaseConfig = {
+      apiKey: "AIzaSyDummyKey_VibePhoneRD2026",
+      authDomain: "vibephonerd-system.firebaseapp.com",
+      projectId: "vibephonerd-system",
+      storageBucket: "vibephonerd-system.appspot.com",
+      messagingSenderId: "100200300400",
+      appId: "1:100200300400:web:vibephone2026key"
+    };
+
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    const db = firebase.firestore();
+
+    // 2. ESTADO GLOBAL DE LA APLICACIÓN
+    let systemState = {
+      adminPin: "Avd121094",
+      repairServiceEnabled: false,
+      disabledRepairMsg: "El servicio de reparaciones no está disponible en este momento.",
+      cart: [],
+      comments: [
+        { id: 1, author: "Pedro Martínez", rating: 5, text: "Excelente atención al cliente y reparación super rápida.", date: "2026-07-20" }
+      ],
+      products: [
+        { id: "1", title: "iPhone 13 Pro 128GB", price: 650.00, category: "Smartphones", img: "📱" },
+        { id: "2", title: "Cargador Rápido 20W", price: 25.00, category: "Accesorios", img: "⚡" },
+        { id: "3", title: "Pantalla OLED Samsung S21", price: 110.00, category: "Repuestos", img: "🔧" }
+      ]
+    };
+
+    // 3. DICCIONARIO MULTILENGUAJE (12 IDIOMAS)
+    const translations = {
+      es: { catalogBtn: "Ver Catálogo", repairBtn: "Servicio de Reparación", myAccount: "Mi Cuenta", search: "Buscar Producto", category: "Categoría", maxPrice: "Precio Máximo ($)", productsTitle: "Catálogo de Productos", reviewsTitle: "Opiniones y Comentarios de Clientes" },
+      en: { catalogBtn: "View Catalog", repairBtn: "Repair Service", myAccount: "My Account", search: "Search Product", category: "Category", maxPrice: "Max Price ($)", productsTitle: "Product Catalog", reviewsTitle: "Customer Reviews & Comments" },
+      fr: { catalogBtn: "Voir le catalogue", repairBtn: "Service de Réparation", myAccount: "Mon Compte", search: "Rechercher", category: "Catégorie", maxPrice: "Prix Max ($)", productsTitle: "Catalogue de Produits", reviewsTitle: "Avis des Clients" },
+      de: { catalogBtn: "Katalog Ansehen", repairBtn: "Reparaturservice", myAccount: "Mein Konto", search: "Produkt Suchen", category: "Kategorie", maxPrice: "Max. Preis ($)", productsTitle: "Produktkatalog", reviewsTitle: "Kundenbewertungen" },
+      it: { catalogBtn: "Vedi Catalogo", repairBtn: "Servizio di Riparazione", myAccount: "Il Mio Account", search: "Cerca Prodotto", category: "Categoria", maxPrice: "Prezzo Max ($)", productsTitle: "Catalogo Prodotti", reviewsTitle: "Recensioni dei Clienti" },
+      pt: { catalogBtn: "Ver Catálogo", repairBtn: "Serviço de Reparo", myAccount: "Minha Conta", search: "Buscar Produto", category: "Categoria", maxPrice: "Preço Máx ($)", productsTitle: "Catálogo de Produtos", reviewsTitle: "Avaliações de Clientes" },
+      br: { catalogBtn: "Ver Catálogo", repairBtn: "Serviço de Reparo", myAccount: "Minha Conta", search: "Buscar Produto", category: "Categoria", maxPrice: "Preço Máx ($)", productsTitle: "Catálogo de Produtos", reviewsTitle: "Avaliações dos Clientes" },
+      zh: { catalogBtn: "查看目录", repairBtn: "维修服务", myAccount: "我的账户", search: "搜索产品", category: "类别", maxPrice: "最高价格 ($)", productsTitle: "产品目录", reviewsTitle: "客户评价" },
+      ja: { catalogBtn: "カタログを見る", repairBtn: "修理サービス", myAccount: "マイアカウント", search: "商品を検索", category: "カテゴリー", maxPrice: "上限価格 ($)", productsTitle: "商品カタログ", reviewsTitle: "カスタマーレビュー" },
+      ko: { catalogBtn: "카탈로그 보기", repairBtn: "수리 서비스", myAccount: "내 계정", search: "제품 검색", category: "카테고리", maxPrice: "최대 가격 ($)", productsTitle: "제품 카탈로그", reviewsTitle: "고객 리뷰" },
+      ru: { catalogBtn: "Смотреть каталог", repairBtn: "Служба ремонта", myAccount: "Мой кабинет", search: "Поиск товара", category: "Категория", maxPrice: "Макс. цена ($)", productsTitle: "Каталог товаров", reviewsTitle: "Отзывы клиентов" },
+      ar: { catalogBtn: "عرض الكتالوج", repairBtn: "خدمة الإصلاح", myAccount: "حسابي", search: "البحث عن منتج", category: "الفئة", maxPrice: "الحد الأقصى للسعر ($)", productsTitle: "كتالوج المنتجات", reviewsTitle: "آراء العملاء" }
+    };
+
+    // 4. INICIALIZACIÓN
+    document.addEventListener('DOMContentLoaded', () => {
+      loadFirebaseConfig();
+      renderProducts(systemState.products);
+      renderAdminProducts();
+      renderComments();
+      updateCartBadge();
+    });
+
+    // Cargar Configuración de Firebase con Fallback Local
+    function loadFirebaseConfig() {
+      db.collection('config').doc('system').get().then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          if (data.adminPin) systemState.adminPin = data.adminPin;
+          if (data.repairEnabled !== undefined) systemState.repairServiceEnabled = data.repairEnabled;
+          if (data.disabledMsg) systemState.disabledRepairMsg = data.disabledMsg;
         }
+        applyLoadedConfig();
+      }).catch(() => {
+        const localPin = localStorage.getItem('vibe_pin');
+        if (localPin) systemState.adminPin = localPin;
+        applyLoadedConfig();
+      });
+    }
 
-        function exitAdmin(){
-            document.getElementById('mainAdmin').classList.add('hidden');
-            document.getElementById('storeView').style.display = 'block';
-            renderStoreProducts(database);
-        }
+    function applyLoadedConfig() {
+      document.getElementById('toggleRepairService').checked = systemState.repairServiceEnabled;
+      document.getElementById('cfgDisabledMsg').value = systemState.disabledRepairMsg;
+      document.getElementById('adminPinInput').value = systemState.adminPin;
+    }
 
-        /* RENDERING TIENDA PÚBLICA */
-        function renderStoreProducts(items){
-            const grid = document.getElementById('product-grid');
-            if(!grid) return;
-            grid.innerHTML = '';
-            
-            if(items.length === 0) {
-                grid.innerHTML = `<p class="col-span-full text-center text-gray-500 py-12 text-sm">No se encontraron equipos disponibles.</p>`;
-                return;
-            }
+    function saveConfigToFirebase() {
+      systemState.repairServiceEnabled = document.getElementById('toggleRepairService').checked;
+      systemState.disabledRepairMsg = document.getElementById('cfgDisabledMsg').value;
 
-            items.forEach(product => {
-                grid.innerHTML += `
-                    <div class="product-card glass rounded-[2rem] p-5 flex flex-col justify-between">
-                        <div class="relative">
-                            <button onclick="toggleFavorite(${product.id})" class="glass w-11 h-11 rounded-xl absolute top-2 right-2 z-20">
-                                <i class="fa-solid fa-heart ${favorites.includes(product.id) ? 'text-red-500' : 'text-gray-500'}"></i>
-                            </button>
-                            <img src="${product.image}" class="w-full h-56 object-contain p-2">
-                        </div>
-                        <div class="mt-4">
-                            <h3 class="text-xl font-black tracking-tight">${product.name}</h3>
-                            <p class="text-[10px] text-primary bg-primary/10 px-2 py-0.5 rounded w-max mt-1 font-bold uppercase">${product.category}</p>
-                            <div class="flex justify-between items-center mt-6">
-                                <h4 class="text-xl md:text-2xl font-black text-primary">RD$${Number(product.price).toLocaleString()}</h4>
-                                <button onclick="sendWhatsApp('${product.name}','${product.price}')" class="btn-premium w-11 h-11 rounded-xl flex items-center justify-center">
-                                    <i class="fa-brands fa-whatsapp text-lg"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>`;
-            });
-        }
+      db.collection('config').doc('system').set({
+        repairEnabled: systemState.repairServiceEnabled,
+        disabledMsg: systemState.disabledRepairMsg,
+        adminPin: systemState.adminPin
+      }, { merge: true });
 
-        /* RENDERING PANEL ADMINISTRATIVO AVANZADO */
-        function calculateAndRenderAdmin(){
-            const container = document.getElementById('inventoryRows');
-            if(!container) return;
-            container.innerHTML = '';
+      localStorage.setItem('vibe_pin', systemState.adminPin);
+    }
 
-            let totalInversion = 0;
-            let totalEstimadoVenta = 0;
-            let totalMargenNeta = 0;
+    // Guardar Nuevo PIN Admin desde el Panel
+    document.getElementById('adminPinForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newPin = document.getElementById('adminPinInput').value.trim();
+      if (!newPin) { alert("El PIN no puede estar vacío."); return; }
 
-            database.forEach(item => {
-                const itemCost = Number(item.cost) || 0;
-                const itemPrice = Number(item.price) || 0;
-                const profitMargin = itemPrice - itemCost;
+      systemState.adminPin = newPin;
+      saveConfigToFirebase();
+      alert("✅ PIN de Administrador actualizado con éxito en Firebase.");
+    });
 
-                totalInversion += itemCost;
-                totalEstimadoVenta += itemPrice;
-                totalMargenNeta += profitMargin;
+    // 5. NAVEGACIÓN Y PESTAÑAS
+    function switchView(viewId) {
+      document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+      document.getElementById(viewId).classList.add('active');
+      window.scrollTo(0, 0);
+    }
 
-                container.innerHTML += `
-                    <tr class="hover:bg-white/[0.02] transition">
-                        <td class="p-4 pl-6">
-                            <div class="flex items-center gap-4">
-                                <img src="${item.image || 'https://via.placeholder.com/150'}" class="w-12 h-12 rounded-xl object-contain bg-white/5 p-1 flex-shrink-0">
-                                <div>
-                                    <h4 class="font-black text-white leading-tight">${item.name}</h4>
-                                    <span class="text-xs text-gray-500">IMEI: ${item.imei || 'N/A'}</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="p-4 uppercase text-xs font-bold tracking-wider text-gray-400">${item.category}</td>
-                        <td class="p-4 text-right font-medium text-gray-300">RD$${itemCost.toLocaleString()}</td>
-                        <td class="p-4 text-right font-black text-primary">RD$${itemPrice.toLocaleString()}</td>
-                        <td class="p-4 text-right font-black text-green-400">RD$${profitMargin.toLocaleString()}</td>
-                        <td class="p-4 text-center">
-                            <button onclick="removeDevice(${item.id})" class="text-red-400 hover:text-red-500 bg-red-500/10 hover:bg-red-500/20 px-3 py-2 rounded-xl text-xs transition">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </td>
-                    </tr>`;
-            });
+    function switchAdminTab(btn, tabId) {
+      document.querySelectorAll('.admin-tab-content').forEach(t => t.style.display = 'none');
+      document.querySelectorAll('#adminDashboardView .tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).style.display = 'block';
+      btn.classList.add('active');
+    }
 
-            document.getElementById('lblTotalEquipos').innerText = database.length;
-            document.getElementById('lblGananciaTotal').innerText = 'RD$' + totalMargenNeta.toLocaleString();
-            
-            document.getElementById('lblCostoInversion').innerText = 'RD$' + totalInversion.toLocaleString();
-            document.getElementById('lblValorVenta').innerText = 'RD$' + totalEstimadoVenta.toLocaleString();
-            document.getElementById('lblGananciaNeta').innerText = 'RD$' + totalMargenNeta.toLocaleString();
-        }
+    function switchCustTab(btn, tabId) {
+      document.querySelectorAll('.cust-tab-content').forEach(t => t.style.display = 'none');
+      document.querySelectorAll('#customerDashboardCard .tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).style.display = 'block';
+      btn.classList.add('active');
+    }
 
-        /* OPERACIONES DE INVENTARIO */
-        document.getElementById('frmAddProduct').addEventListener('submit', function(e){
-            e.preventDefault();
-            
-            const newDevice = {
-                id: Date.now(),
-                name: document.getElementById('inpName').value,
-                cost: Number(document.getElementById('inpCost').value),
-                price: Number(document.getElementById('inpPrice').value),
-                category: document.getElementById('inpCategory').value,
-                imei: document.getElementById('inpImei').value || 'N/A',
-                image: document.getElementById('inpImage').value || 'https://m.media-amazon.com/images/I/61H69zNoKCL._AC_SL1500_.jpg'
-            };
+    // 6. AUTENTICACIÓN ADMIN POR PIN
+    function openAdminModal() { document.getElementById('adminModal').style.display = 'flex'; }
+    function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; document.getElementById('adminLoginForm').reset(); }
 
-            database.push(newDevice);
-            localStorage.setItem('vibe_inventory', JSON.stringify(database));
-            calculateAndRenderAdmin();
-            toggleModal();
-            this.reset();
-        });
+    document.getElementById('adminLoginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const enteredPin = document.getElementById('inputAdminPin').value;
+      
+      if (enteredPin === systemState.adminPin) {
+        closeAdminModal();
+        switchView('adminDashboardView');
+      } else {
+        alert("❌ PIN Incorrecto. Acceso Denegado.");
+        closeAdminModal();
+      }
+    });
 
-        function removeDevice(id){
-            if(confirm('¿Remover este dispositivo de Vibephones RD?')){
-                database = database.filter(item => item.id !== id);
-                localStorage.setItem('vibe_inventory', JSON.stringify(database));
-                calculateAndRenderAdmin();
-            }
-        }
+    // 7. CONTROL DE REPARACIONES
+    function handleRepairClick() {
+      if (!systemState.repairServiceEnabled) {
+        alert("⚠️ " + systemState.disabledRepairMsg);
+        return;
+      }
+      switchView('repairView');
+    }
 
-        function toggleModal(){
-            const modal = document.getElementById('productModal');
-            modal.classList.toggle('hidden');
-            modal.classList.toggle('flex');
-        }
+    function trackRepairDevice() {
+      const input = document.getElementById('trackInput').value.trim();
+      const res = document.getElementById('repairResult');
 
-        /* FILTROS, FAVORITOS Y AUXILIARES */
-        function toggleFavorite(id){
-            if(favorites.includes(id)){
-                favorites = favorites.filter(f => f !== id);
-            } else {
-                favorites.push(id);
-                showToast();
-            }
-            localStorage.setItem('favorites', JSON.stringify(favorites));
-            updateFavorites();
-            renderStoreProducts(database);
-        }
+      if (!input) { alert("Ingresa un código IMEI o Ficha válido."); return; }
 
-        function updateFavorites(){
-            document.getElementById('favCount').innerText = favorites.length;
-            const list = document.getElementById('favoritesList');
-            if(!list) return;
-            list.innerHTML = '';
-            
-            const favItems = database.filter(p => favorites.includes(p.id));
-            if(favItems.length === 0) {
-                list.innerHTML = `<p class="text-center text-gray-500 text-sm py-4">Tu lista está vacía.</p>`;
-                return;
-            }
+      res.innerHTML = `
+        <h3><i class="fa-solid fa-mobile"></i> Equipo Encontrado: Samsung Galaxy S21</h3>
+        <p style="color:var(--text-muted); margin-top:5px;">Falla Reportada: Cambio de Pantalla OLED</p>
+        <p style="margin-top:10px;">Estado Técnico: <strong style="color:var(--warning);">En Diagnóstico / En Proceso</strong></p>
+      `;
+      res.style.display = 'block';
+    }
 
-            favItems.forEach(product => {
-                list.innerHTML += `
-                    <div class="glass rounded-2xl p-3 flex items-center gap-4">
-                        <img src="${product.image}" class="w-14 h-14 object-contain">
-                        <div class="flex-1">
-                            <h3 class="font-black text-sm">${product.name}</h3>
-                            <p class="text-primary font-bold text-xs">RD$${Number(product.price).toLocaleString()}</p>
-                        </div>
-                        <button onclick="toggleFavorite(${product.id})" class="text-red-500 px-2"><i class="fa-solid fa-trash-can"></i></button>
-                    </div>`;
-            });
-        }
+    // 8. FILTROS Y PRODUCTOS
+    function renderProducts(items) {
+      const grid = document.getElementById('productsGrid');
+      if(!items.length) {
+        grid.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:var(--text-muted);">No se encontraron productos.</p>`;
+        return;
+      }
+      grid.innerHTML = items.map(p => `
+        <div class="card" style="text-align:center;">
+          <div style="font-size:3rem; margin-bottom:10px;">${p.img}</div>
+          <h3>${p.title}</h3>
+          <p style="font-size:0.8rem; color:var(--text-muted);">${p.category}</p>
+          <p style="font-size:1.2rem; font-weight:bold; color:var(--primary); margin:10px 0;">$${p.price.toFixed(2)}</p>
+          <button class="btn" onclick="addToCart('${p.id}')"><i class="fa-solid fa-cart-plus"></i> Agregar</button>
+        </div>
+      `).join('');
+    }
 
-        function filterProducts(){
-            const value = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = database.filter(product => product.name.toLowerCase().includes(value));
-            renderStoreProducts(filtered);
-        }
+    function filterProducts() {
+      const q = document.getElementById('searchCatalogInput').value.toLowerCase();
+      const cat = document.getElementById('filterCategorySelect').value;
+      const maxP = parseFloat(document.getElementById('filterPriceInput').value);
 
-        function filterCategory(category){
-            if(category === 'all') { renderStoreProducts(database); return; }
-            renderStoreProducts(database.filter(p => p.category === category));
-        }
+      const filtered = systemState.products.filter(p => {
+        const matchesName = p.title.toLowerCase().includes(q);
+        const matchesCat = cat === 'all' || p.category === cat;
+        const matchesPrice = isNaN(maxP) || p.price <= maxP;
+        return matchesName && matchesCat && matchesPrice;
+      });
 
-        function toggleDarkMode() { document.documentElement.classList.toggle('dark'); }
-        function toggleFavoritesPanel(){
-            const panel = document.getElementById('favoritesPanel');
-            panel.style.right = (panel.style.right === '0px' || panel.classList.contains('right-0')) ? '-100%' : '0px';
-            panel.classList.toggle('right-0');
-        }
+      renderProducts(filtered);
+    }
 
-        function showToast(){
-            const toast = document.getElementById('toast');
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
+    // CRUD DE PRODUCTOS (ADMIN)
+    document.getElementById('addProductForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('pTitle').value;
+      const price = parseFloat(document.getElementById('pPrice').value);
+      const category = document.getElementById('pCategory').value;
+      const img = document.getElementById('pImg').value || "📱";
 
-        function sendWhatsApp(modelo, precio){
-            const msg = encodeURIComponent(`Saludos Vibephones RD, me interesa el equipo: ${modelo} (RD$${Number(precio).toLocaleString()}).`);
-            window.open(`https://wa.me/18098182320?text=${msg}`, '_blank');
-        }
+      const newProd = { id: Date.now().toString(), title, price, category, img };
+      systemState.products.push(newProd);
+      renderProducts(systemState.products);
+      renderAdminProducts();
+      document.getElementById('addProductForm').reset();
+      alert("✅ Producto agregado con éxito al catálogo.");
+    });
 
-        function scrollProducts() { document.getElementById('productos').scrollIntoView(); }
-        function openWhatsApp() { window.open('https://wa.me/18098182320', '_blank'); }
+    function renderAdminProducts() {
+      const tbody = document.getElementById('adminProductsTable');
+      tbody.innerHTML = systemState.products.map(p => `
+        <tr>
+          <td>${p.img} ${p.title}</td>
+          <td>${p.category}</td>
+          <td>$${p.price.toFixed(2)}</td>
+          <td><button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">Eliminar</button></td>
+        </tr>
+      `).join('');
+      document.getElementById('lblTotalProdCount').innerText = systemState.products.length;
+    }
 
-        function createParticles(){
-            const container = document.getElementById('particles');
-            for(let i=0; i<25; i++){
-                const p = document.createElement('div');
-                p.classList.add('particle');
-                const size = Math.random() * 4 + 2;
-                p.style.width = size + 'px'; p.style.height = size + 'px';
-                p.style.left = Math.random() * 100 + 'vw';
-                p.style.animationDuration = (Math.random() * 12 + 8) + 's';
-                p.style.opacity = Math.random() * 0.4;
-                container.appendChild(p);
-            }
-        }
+    function deleteProduct(id) {
+      systemState.products = systemState.products.filter(p => p.id !== id);
+      renderProducts(systemState.products);
+      renderAdminProducts();
+    }
 
-        // INIT SWIPER COMPACTO
-        new Swiper('.swiper', { 
-            loop: true, 
-            autoplay: { delay: 3000, disableOnInteraction: false }, 
-            pagination: { el: '.swiper-pagination', clickable: true } 
-        });
-        
-        createParticles();
-        renderStoreProducts(database);
-        updateFavorites();
-    </script>
+    // 9. CARRITO DE COMPRAS
+    function addToCart(pId) {
+      const prod = systemState.products.find(p => p.id === pId);
+      systemState.cart.push(prod);
+      updateCartBadge();
+    }
+
+    function updateCartBadge() {
+      document.getElementById('cartCount').innerText = systemState.cart.length;
+      const tbody = document.getElementById('cartTableBody');
+      let total = 0;
+
+      tbody.innerHTML = systemState.cart.map((item, idx) => {
+        total += item.price;
+        return `
+          <tr>
+            <td>${item.img} ${item.title}</td>
+            <td>$${item.price.toFixed(2)}</td>
+            <td>1</td>
+            <td>$${item.price.toFixed(2)}</td>
+            <td><button class="btn btn-danger btn-sm" onclick="removeFromCart(${idx})">✕</button></td>
+          </tr>
+        `;
+      }).join('');
+
+      document.getElementById('cartTotal').innerText = total.toFixed(2);
+    }
+
+    function removeFromCart(idx) {
+      systemState.cart.splice(idx, 1);
+      updateCartBadge();
+    }
+
+    function processCheckout() {
+      if (!systemState.cart.length) { alert("El carrito está vacío."); return; }
+      alert("¡Orden procesada con éxito! Gracias por comprar en VibePhone RD.");
+      systemState.cart = [];
+      updateCartBadge();
+      switchView('storeView');
+    }
+
+    // 10. CAJA DE COMENTARIOS
+    document.getElementById('commentForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('commAuthor').value;
+      const stars = document.getElementById('commRating').value;
+      const text = document.getElementById('commText').value;
+
+      const newComment = {
+        id: Date.now(),
+        author: name,
+        rating: parseInt(stars),
+        text: text,
+        date: new Date().toISOString().split('T')[0]
+      };
+
+      systemState.comments.unshift(newComment);
+      renderComments();
+      document.getElementById('commentForm').reset();
+      alert("¡Gracias por tu comentario!");
+    });
+
+    function renderComments() {
+      const container = document.getElementById('commentsContainer');
+      container.innerHTML = systemState.comments.map(c => `
+        <div class="comment-card">
+          <div class="comment-header">
+            <span>${c.author}</span>
+            <span>${'⭐'.repeat(c.rating)}</span>
+          </div>
+          <p style="font-size:0.9rem; color:var(--text-main);">${c.text}</p>
+          <div style="font-size:0.75rem; color:var(--text-muted); margin-top:6px;">${c.date}</div>
+        </div>
+      `).join('');
+    }
+
+    // 11. LOGIN DE CLIENTE SIMULADO
+    function loginCustomer() {
+      const email = document.getElementById('custEmail').value;
+      document.getElementById('lblCustEmail').innerText = email;
+      document.getElementById('customerAuthCard').style.display = 'none';
+      document.getElementById('customerDashboardCard').style.display = 'block';
+    }
+
+    function logoutCustomer() {
+      document.getElementById('customerDashboardCard').style.display = 'none';
+      document.getElementById('customerAuthCard').style.display = 'block';
+      document.getElementById('customerAuthForm').reset();
+    }
+
+    // 12. TEMA E IDIOMAS
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+    }
+
+    function changeLanguage(lang) {
+      const t = translations[lang] || translations.es;
+      if(document.getElementById('lblCatalogBtn')) document.getElementById('lblCatalogBtn').innerText = t.catalogBtn;
+      if(document.getElementById('lblRepairBtn')) document.getElementById('lblRepairBtn').innerText = t.repairBtn;
+      if(document.getElementById('lblMyAccount')) document.getElementById('lblMyAccount').innerText = t.myAccount;
+      if(document.getElementById('lblSearch')) document.getElementById('lblSearch').innerText = t.search;
+      if(document.getElementById('lblCategory')) document.getElementById('lblCategory').innerText = t.category;
+      if(document.getElementById('lblMaxPrice')) document.getElementById('lblMaxPrice').innerText = t.maxPrice;
+      if(document.getElementById('lblProductsTitle')) document.getElementById('lblProductsTitle').innerText = t.productsTitle;
+      if(document.getElementById('lblReviewsTitle')) document.getElementById('lblReviewsTitle').innerText = t.reviewsTitle;
+    }
+  </script>
 </body>
 </html>
